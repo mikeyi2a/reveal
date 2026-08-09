@@ -152,7 +152,12 @@ button {
   }
 }
 
-/* Column resize handles: the grip line stays hidden until you hover the gap
+/* The detection queue scroll column fades out at the bottom so cards melt off
+ * instead of hard-cutting. Mask is visual only — the area stays scrollable. */
+.detection-fade {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 30px), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 30px), transparent 100%);
+}
  * (or are actively dragging), so it never adds visual noise to the console. */
 .col-divider-line {
   width: 2px;
