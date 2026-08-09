@@ -546,19 +546,31 @@ export default function OperatorDashboard() {
           <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '13px' }}>
             Mode: {autoPush ? 'Auto-push' : 'Manual confirm'}
           </span>
-          <SecondaryButton
-            onClick={() => setAutoPush(!autoPush)}
-            style={{
-              backgroundColor: autoPush ? 'rgba(25,167,206,0.18)' : '#0A273D',
-              border: autoPush ? '1px solid rgba(25,167,206,0.40)' : '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '9999px',
-              color: autoPush ? '#19A7CE' : '#8D9AA6',
-              paddingBlock: '9px',
-              paddingInline: '18px',
-            }}
+          <BorderBeam
+            size="pulse-outside"
+            colorVariant="ocean"
+            theme="dark"
+            active={autoPush}
+            strength={0.55}
+            brightness={1.6}
+            duration={2.2}
+            borderRadius={9999}
           >
-            <span style={{ fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Auto-push</span>
-          </SecondaryButton>
+            <SecondaryButton
+              onClick={() => setAutoPush(!autoPush)}
+              style={{
+                backgroundColor: autoPush ? 'rgba(25,167,206,0.18)' : '#0A273D',
+                border: autoPush ? '1px solid #19A7CE' : '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '9999px',
+                boxShadow: autoPush ? '0 0 0 1px rgba(25, 167, 206, 0.4)' : undefined,
+                color: '#FCF7F0',
+                paddingBlock: '9px',
+                paddingInline: '18px',
+              }}
+            >
+              <span style={{ fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Auto-push</span>
+            </SecondaryButton>
+          </BorderBeam>
           <SecondaryButton
             danger
             onClick={() => setShowEndModal(true)}
