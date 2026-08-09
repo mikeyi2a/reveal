@@ -298,20 +298,50 @@ export default function OperatorDashboard() {
         </div>
       </header>
 
-      <div style={{ display: 'flex', flexShrink: 0, flexWrap: 'wrap', gap: '10px', paddingBottom: '2px', paddingInline: '24px' }}>
-        {metrics.map((m) => {
+      <div style={{ alignItems: 'center', display: 'flex', flexShrink: 0, paddingInline: '24px' }}>
+        {metrics.flatMap((m, i) => {
           const Icon = m.icon;
-          return (
-            <Card key={m.label} style={{ flex: '1 1 170px', gap: '6px', paddingBlock: '10px', paddingInline: '14px' }}>
-              <div style={{ alignItems: 'center', display: 'flex', gap: '6px' }}>
-                <Icon size={14} weight="regular" color="#5B6B78" />
-                <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px' }}>{m.label}</span>
+          const item = (
+            <div
+              key={m.label}
+              style={{
+                alignItems: 'center',
+                display: 'flex',
+                flex: '1 1 0',
+                gap: '10px',
+                justifyContent: 'flex-start',
+                paddingBlock: '12px',
+                paddingInline: i === 0 ? '0' : '22px',
+              }}
+            >
+              <Icon size={15} weight="regular" color="#5B6B78" />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{m.label}</span>
+                <span
+                  style={{
+                    color: m.color,
+                    fontFamily: '"Figtree", system-ui, sans-serif',
+                    fontFeatureSettings: '"tnum"',
+                    fontSize: '22px',
+                    fontWeight: 600,
+                    letterSpacing: '-0.03em',
+                    lineHeight: 1,
+                  }}
+                >
+                  {m.value}
+                </span>
               </div>
-              <span style={{ color: m.color, fontFamily: '"Figtree", system-ui, sans-serif', fontFeatureSettings: '"tnum"', fontSize: '22px', fontWeight: 600, letterSpacing: '-0.03em' }}>
-                {m.value}
-              </span>
-            </Card>
+            </div>
           );
+          return i === 0
+            ? [item]
+            : [
+                <div
+                  key={`divider-${m.label}`}
+                  style={{ alignSelf: 'center', backgroundColor: 'rgba(255,255,255,0.08)', height: '50%', width: '1px', flexShrink: 0 }}
+                />,
+                item,
+              ];
         })}
       </div>
 
@@ -605,8 +635,9 @@ export default function OperatorDashboard() {
             colorVariant="ocean"
             theme="dark"
             active={autoPush}
-            strength={0.55}
-            brightness={1.6}
+            strength={1.0}
+            brightness={2.4}
+            saturation={2.4}
             duration={2.2}
             borderRadius={9999}
           >
