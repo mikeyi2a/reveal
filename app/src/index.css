@@ -157,8 +157,7 @@ button {
 .detection-fade {
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 30px), transparent 100%);
   mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 30px), transparent 100%);
-}
- * (or are actively dragging), so it never adds visual noise to the console. */
+/* The column divider line stays hidden until hovered or dragged. */
 .col-divider-line {
   width: 2px;
   height: 24%;
