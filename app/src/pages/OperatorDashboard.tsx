@@ -401,9 +401,9 @@ export default function OperatorDashboard() {
                       size="pulse-outside"
                       colorVariant="ocean"
                       theme="dark"
-                      strength={0.85}
-                      brightness={2.0}
-                      saturation={2.2}
+                      strength={1.2}
+                      brightness={2.8}
+                      saturation={2.8}
                       duration={2.2}
                       style={{ borderRadius: '12px' }}
                     >
