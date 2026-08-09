@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reveal — Screen Design Variants (Mixpanel, Riverside, Whop, & Mistral AI)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #000B14;
+      --bg-card: #051929;
+      --bg-fill: #0A273D;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --text-primary: #FCF7F0;
+      --text-muted: #8D9AA6;
+      --accent-cyan: #19A7CE;
+      --status-success: #12D453;
+      --font-heading: 'Figtree', sans-serif;
+      --font-body: 'Geist', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-page); color: var(--text-primary); font-family: var(--font-body); line-height: 1.6; padding: 30px; }
+
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 20px; margin-bottom: 24px; }
+    .title-group h1 { font-family: var(--font-heading); font-size: 26px; font-weight: 600; color: var(--accent-cyan); letter-spacing: -0.03em; }
+    .title-group p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+    .nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: var(--bg-card); padding: 6px; border-radius: 8px; }
+    .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px 18px; border-radius: 6px; font-family: var(--font-heading); font-size: 13px; font-weight: 600; letter-spacing: -0.03em; cursor: pointer; transition: all 0.2s ease; }
+    .tab-btn.active { background: var(--accent-cyan); color: var(--bg-page); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+
+    .variant-selector { display: flex; gap: 12px; margin-bottom: 24px; align-items: center; }
+    .variant-btn { background: var(--bg-fill); border: 1px solid var(--border-subtle); color: var(--text-muted); padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .variant-btn.active { background: var(--accent-cyan); color: var(--bg-page); border-color: var(--accent-cyan); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+
+    .screen-container { background: var(--bg-page); border-radius: 12px; border: 1px solid var(--border-subtle); min-height: 680px; overflow: hidden; display: flex; flex-direction: column; }
+
+    .variant-section { display: none; }
+    .variant-section.active { display: flex; flex-direction: column; flex: 1; }
+
+    /* 3D Tactile Primary Buttons (Inner Bottom Shadow) */
+    .btn-primary { 
+      background: var(--accent-cyan); 
+      color: var(--bg-page); 
+      border: none; 
+      padding: 10px 20px; 
+      border-radius: 8px; 
+      font-family: var(--font-heading); 
+      font-size: 13px; 
+      font-weight: 600; 
+      letter-spacing: -0.03em; 
+      cursor: pointer; 
+      box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25); 
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-secondary { background: var(--bg-fill); color: var(--text-muted); border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
+
+    /* 16:9 Aspect Ratio Slide Preview Monitor */
+    .slide-preview-16-9 {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000B14;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>Reveal — Screen Design Variants (Mixpanel, Riverside, Whop, & Mistral AI)</h1>
+      <p>Strictly adhering to design.md: Split Dual Containers (Top: Speech Transcript, Bottom: Verse Matching), 16:9 slide previews, 3D tactile buttons.</p>
+    </div>
+  </header>
+
+  <!-- Screen Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn" onclick="switchScreen('landing')">1. Landing Screen</button>
+    <button class="tab-btn active" onclick="switchScreen('dashboard')">2. Operator Dashboard (Split Dual Containers)</button>
+    <button class="tab-btn" onclick="switchScreen('audio')">3. Audio Setup</button>
+    <button class="tab-btn" onclick="switchScreen('theme')">4. Theme Studio</button>
+    <button class="tab-btn" onclick="switchScreen('projector')">5. Projector View</button>
+  </div>
+
+  <!-- Variant Selector Bar -->
+  <div class="variant-selector">
+    <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Select Variant:</span>
+    <button class="variant-btn active" onclick="switchVariant('var-a')">Variant A: Split Dual Containers (Transcription + Verse Matching)</button>
+    <button class="variant-btn" onclick="switchVariant('var-b')">Variant B: Mixpanel Pro Console (Split Deck)</button>
+    <button class="variant-btn" onclick="switchVariant('var-c')">Variant C: Mistral Clean Minimalist (Split Stream)</button>
+  </div>
+
+  <!-- Screen Canvas Container -->
+  <div class="screen-container">
+
+    <!-- 1. LANDING SCREEN VARIANTS -->
+    <div id="screen-landing" class="screen-view" style="display:none;">
+      
+      <!-- Variant A: Mixpanel Data-Dense -->
+      <div class="variant-section var-a active" style="padding: 40px;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 12px;">VARIANT A • MIXPANEL DATA-DENSE LANDING</div>
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; max-width: 600px; margin: 0 auto 40px auto;">
+          <h2 style="font-family: var(--font-heading); font-size: 32px; font-weight: 600; letter-spacing: -0.03em; color: var(--text-primary);">Church Live-Service Scripture Presentation</h2>
+          <p style="color: var(--text-muted); font-size: 15px;">On-device speech transcription and instant verse projection for church services.</p>
+          <button class="btn-primary" style="padding: 12px 28px; font-size: 14px;">START SESSION</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <div style="background: var(--bg-card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--accent-cyan); letter-spacing: -0.03em;">01 • AUDIO INPUT</span>
+            <div style="font-size: 14px; font-weight: 500;">Room Mic (MacBook Pro)</div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--status-success);"><div style="width:6px; height:6px; border-radius:50%; background:#12D453;"></div> Signal Active</div>
+          </div>
+          
+          <div style="background: var(--bg-card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--accent-cyan); letter-spacing: -0.03em;">02 • PROJECTION THEME</span>
+            <div style="font-size: 14px; font-weight: 500;">Sacred Obsidian (Default)</div>
+            <div style="font-size: 12px; color: var(--text-muted);">High-contrast dark mode</div>
+          </div>
+
+          <div style="background: var(--bg-card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--accent-cyan); letter-spacing: -0.03em;">03 • SERVICE LABEL</span>
+            <div style="font-size: 14px; font-weight: 500;">Salford Young Adults</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Footer tag on stage output</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant B: Mistral AI Serene Minimalist -->
+      <div class="variant-section var-b" style="padding: 60px 40px; align-items: center; text-align: center;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 24px;">VARIANT B • MISTRAL AI SERENE MINIMALIST</div>
+        <h2 style="font-family: var(--font-heading); font-size: 36px; font-weight: 600; letter-spacing: -0.03em; color: var(--text-primary); max-width: 700px; margin-bottom: 16px;">Real-Time Sermon Speech to Scripture</h2>
+        <p style="color: var(--text-muted); font-size: 16px; max-width: 500px; margin-bottom: 32px;">Zero manual media work. Runs 100% offline on-device.</p>
+        <button class="btn-primary" style="padding: 14px 36px; font-size: 15px; margin-bottom: 40px;">START LIVE SESSION</button>
+
+        <div style="display: flex; gap: 24px; color: var(--text-muted); font-size: 13px;">
+          <span>WEB Cached ✓</span> • <span>Whisper On-Device ✓</span> • <span>Offline Ready ✓</span>
+        </div>
+      </div>
+
+      <!-- Variant C: Whop Modular Action Cards -->
+      <div class="variant-section var-c" style="padding: 40px;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 20px;">VARIANT C • WHOP MODULAR CARDS</div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+          <div style="background: var(--bg-card); border-radius: 8px; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+            <h2 style="font-family: var(--font-heading); font-size: 24px; font-weight: 600; letter-spacing: -0.03em;">Ready for Sunday Service</h2>
+            <p style="color: var(--text-muted); font-size: 14px;">Select your microphone input and service label to launch live transcription.</p>
+            <button class="btn-primary" style="width: fit-content;">LAUNCH CONSOLE ↵</button>
+          </div>
+          
+          <div style="background: var(--bg-card); border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+            <span style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--accent-cyan); letter-spacing: -0.03em;">OFFLINE STATUS</span>
+            <div style="font-size: 13px; color: var(--text-primary);">WEB Bible Cached</div>
+            <div style="font-size: 13px; color: var(--text-primary);">Whisper Model Loaded</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 2. OPERATOR DASHBOARD VARIANTS (WITH SPLIT DUAL CONTAINERS ON LEFT) -->
+    <div id="screen-dashboard" class="screen-view" style="display:block;">
+      
+      <!-- Variant A: Split Dual Containers (Top: Speech Transcript, Bottom: Bible Verse Matching) -->
+      <div class="variant-section var-a active" style="padding: 24px;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 12px;">VARIANT A • SPLIT DUAL CONTAINERS (TOP: SPEECH TRANSCRIPTION, BOTTOM: VERSE MATCHING)</div>
+        
+        <div style="display: flex; gap: 20px; flex: 1;">
+          
+          <!-- Left Column: SPLIT DUAL CONTAINERS -->
+          <div style="flex: 1.4; display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- TOP CONTAINER: LIVE SPEECH TRANSCRIPTION STREAM -->
+            <div style="background: var(--bg-card); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; letter-spacing: -0.03em;">
+                <span>1. LIVE SPEECH TRANSCRIPTION STREAM</span>
+                <span style="color: var(--status-success);">● 18ms WebGPU Whisper</span>
+              </div>
+              
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: var(--text-primary); line-height: 1.5;">
+                <div style="background: var(--bg-fill); border-radius: 8px; padding: 12px 16px; color: var(--text-muted);">
+                  <span style="font-size: 11px; color: var(--text-muted); font-weight: 500; display: block; margin-bottom: 4px;">PREACHER LOG</span>
+                  "...welcome everyone to Salford Young Adults tonight. Open your Bibles with me to John chapter 3 verse 16..."
+                </div>
+              </div>
+            </div>
+
+            <!-- BOTTOM CONTAINER: BIBLE VERSE DETECTION & MATCHING -->
+            <div style="background: var(--bg-card); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; flex: 1; border: 1px solid var(--accent-cyan);">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--accent-cyan); font-family: var(--font-heading); font-weight: 600; letter-spacing: -0.03em;">
+                <span>2. BIBLE VERSE DETECTION & MATCHING</span>
+                <span style="color: var(--status-success); font-size: 11px;">98.4% Confidence Match</span>
+              </div>
+              
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="font-family: var(--font-heading); font-size: 18px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.03em;">JOHN 3:16-17 (WEB Translation)</div>
+                <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">"For God so loved the world, that he gave his only born Son, that whoever believes in him should not perish, but have eternal life."</div>
+              </div>
+
+              <!-- 3D TACTILE PRIMARY BUTTON -->
+              <button class="btn-primary" style="align-self: flex-start; margin-top: 4px;">CONFIRM & PUSH TO STAGE ↵</button>
+            </div>
+
+          </div>
+
+          <!-- Right Column: 16:9 Stage Slide Preview & Queue -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+            
+            <!-- 16:9 Aspect Ratio Live TV/Projector Slide Preview -->
+            <div style="background: var(--bg-card); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-family: var(--font-heading); font-weight: 600; letter-spacing: -0.03em;">
+                <span style="color: var(--status-success);">● LIVE ON STAGE PROJECTOR (16:9)</span>
+                <span style="color: var(--text-muted); font-size: 11px; cursor: pointer;">CLEAR SCREEN</span>
+              </div>
+              
+              <div class="slide-preview-16-9">
+                <div style="background: var(--bg-fill); color: var(--accent-cyan); padding: 3px 10px; border-radius: 9999px; font-family: var(--font-heading); font-size: 10px; font-weight: 600; letter-spacing: -0.03em;">JOHN 3:16-17</div>
+                <div style="font-size: 13px; color: var(--text-primary); line-height: 1.5; font-weight: 400; max-width: 90%;">
+                  "For God so loved the world, that he gave his only born Son..."
+                </div>
+                <div style="font-size: 9px; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase;">REVEAL LIVE • SALFORD YOUNG ADULTS</div>
+              </div>
+            </div>
+
+            <!-- Queue Action Card -->
+            <div style="background: var(--bg-card); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--accent-cyan); letter-spacing: -0.03em;">DETECTION QUEUE (1 PENDING)</div>
+              <div style="font-family: var(--font-heading); font-size: 16px; font-weight: 600; letter-spacing: -0.03em;">JOHN 3:16-17 • WEB</div>
+              <button class="btn-primary">PUSH TO SCREEN (1-TAP)</button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Variant B: Mixpanel Pro Console + 16:9 Display Deck -->
+      <div class="variant-section var-b" style="padding: 24px;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 12px;">VARIANT B • MIXPANEL PRO CONSOLE WITH 16:9 SLIDE PREVIEW</div>
+        
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px;">
+          <div style="background: var(--bg-card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+            <div style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--accent-cyan); letter-spacing: -0.03em;">CONFIDENCE SCORE • 98.4% MATCH</div>
+            <div style="font-size: 15px; color: var(--text-primary);">John 3:16-17 (WEB Translation)</div>
+            <div style="font-size: 13px; color: var(--text-muted);">"For God so loved the world that he gave his only Son..."</div>
+            <button class="btn-primary" style="width: fit-content;">PROJECT VERSE ↵</button>
+          </div>
+
+          <div style="background: var(--bg-card); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--status-success); letter-spacing: -0.03em;">● STAGE TV MONITOR (16:9)</span>
+            
+            <div class="slide-preview-16-9">
+              <div style="background: #0A273D; color: #19A7CE; padding: 3px 8px; border-radius: 9999px; font-family: var(--font-heading); font-size: 9px; font-weight: 600;">JOHN 3:16</div>
+              <div style="font-size: 12px; color: #FCF7F0;">"For God so loved the world..."</div>
+              <div style="font-size: 8px; color: #8D9AA6;">SALFORD YOUNG ADULTS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant C: Mistral Clean Minimalist + 16:9 Stage Frame -->
+      <div class="variant-section var-c" style="padding: 24px;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 12px;">VARIANT C • MISTRAL CLEAN MINIMALIST WITH 16:9 STAGE FRAME</div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div style="background: var(--bg-card); border-radius: 8px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-family: var(--font-heading); font-size: 22px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 8px;">JOHN 3:16-17</div>
+              <div style="font-size: 13px; color: var(--text-muted);">Detected from live speech feed</div>
+            </div>
+            <button class="btn-primary" style="width: fit-content; margin-top: 20px;">PROJECT VERSE ↵</button>
+          </div>
+
+          <div style="background: var(--bg-card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--text-muted); letter-spacing: -0.03em;">STAGE TV PREVIEW (16:9)</div>
+            
+            <div class="slide-preview-16-9" style="background: #000000;">
+              <div style="background: #0A0A0A; color: #38BDF8; padding: 3px 8px; border-radius: 9999px; font-family: var(--font-heading); font-size: 9px; font-weight: 600;">JOHN 3:16</div>
+              <div style="font-size: 12px; color: #FFFFFF;">"For God so loved the world..."</div>
+              <div style="font-size: 8px; color: #64748B;">REVEAL MONOLITH</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3. AUDIO SETUP VARIANTS -->
+    <div id="screen-audio" class="screen-view" style="display:none;">
+      
+      <div class="variant-section var-a active" style="padding: 40px;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 16px;">VARIANT A • RIVERSIDE WAVEFORM MONITOR</div>
+        <div style="background: var(--bg-card); border-radius: 8px; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+          <h2 style="font-family: var(--font-heading); font-size: 22px; font-weight: 600; letter-spacing: -0.03em;">Check your audio input</h2>
+          <div style="display: flex; gap: 4px; height: 32px; background: var(--bg-page); padding: 6px; border-radius: 6px;">
+            <div style="flex:1; height:60%; background:#12D453; border-radius:2px;"></div>
+            <div style="flex:1; height:90%; background:#12D453; border-radius:2px;"></div>
+            <div style="flex:1; height:100%; background:#12D453; border-radius:2px;"></div>
+            <div style="flex:1; height:70%; background:#19A7CE; border-radius:2px;"></div>
+          </div>
+          <div style="font-size: 13px; color: var(--text-muted);">Selected: Room Mic (MacBook Pro Microphone)</div>
+        </div>
+      </div>
+
+      <div class="variant-section var-b" style="padding: 40px;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 16px;">VARIANT B • WHOP DEVICE CARD SELECTOR</div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+          <div style="background: var(--bg-fill); border-radius: 8px; padding: 20px; font-weight: 600; color: var(--accent-cyan);">✓ Room Mic (Built-in)</div>
+          <div style="background: var(--bg-card); border-radius: 8px; padding: 20px; color: var(--text-muted);">USB Audio Desk Feed (V1.1)</div>
+        </div>
+      </div>
+
+      <div class="variant-section var-c" style="padding: 40px;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 16px;">VARIANT C • MISTRAL TECHNICAL GRID</div>
+        <div style="background: var(--bg-card); border-radius: 8px; padding: 24px; font-size: 13px; color: var(--text-muted);">
+          Device: MacBook Pro Mic • Sample Rate: 48kHz • WebGPU Acceleration: Active (18ms)
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 4. THEME STUDIO VARIANTS -->
+    <div id="screen-theme" class="screen-view" style="display:none;">
+      
+      <div class="variant-section var-a active" style="padding: 24px;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 12px;">VARIANT A • SPLIT STAGE PREVIEW & SWATCHES</div>
+        <div style="display: flex; gap: 20px; flex: 1;">
+          <div style="flex: 1.4; background: #000B14; border-radius: 8px; padding: 32px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+            <div style="background: #0A273D; color: #19A7CE; padding: 6px 16px; border-radius: 9999px; font-family: var(--font-heading); font-size: 13px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 16px;">JOHN 3:16</div>
+            <div style="font-size: 22px; color: #FCF7F0; line-height: 1.6;">"For God so loved the world..."</div>
+          </div>
+          <div style="flex: 1; background: var(--bg-card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: var(--accent-cyan); letter-spacing: -0.03em;">SELECT PRESET</div>
+            <div style="background: var(--bg-fill); padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--accent-cyan);">1. Sacred Obsidian (Default)</div>
+            <div style="padding: 12px; font-size: 13px; color: var(--text-muted);">2. Minimalist Monolith</div>
+            <div style="padding: 12px; font-size: 13px; color: var(--text-muted);">3. Warm Sanctuary</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="variant-section var-b" style="padding: 40px; align-items: center;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 20px;">VARIANT B • MONOLITH STAGE FOCUS</div>
+        <div style="background: #000000; border-radius: 8px; padding: 48px; text-align: center; width: 100%; max-width: 700px;">
+          <div style="font-family: var(--font-heading); font-size: 26px; font-weight: 600; color: #FFFFFF; letter-spacing: -0.03em;">JOHN 3:16 • SWISS MONOLITH</div>
+        </div>
+      </div>
+
+      <div class="variant-section var-c" style="padding: 40px;">
+        <div style="font-family: var(--font-heading); font-size: 13px; color: var(--accent-cyan); font-weight: 600; letter-spacing: -0.03em; margin-bottom: 16px;">VARIANT C • WHOP SWATCH GRID</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+          <div style="background: var(--bg-card); padding: 20px; border-radius: 8px; font-weight: 600;">Sacred Obsidian</div>
+          <div style="background: var(--bg-card); padding: 20px; border-radius: 8px; color: var(--text-muted);">Minimal Monolith</div>
+          <div style="background: var(--bg-card); padding: 20px; border-radius: 8px; color: var(--text-muted);">Warm Sanctuary</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 5. PROJECTOR VIEW VARIANTS -->
+    <div id="screen-projector" class="screen-view" style="display:none;">
+      
+      <div class="variant-section var-a active" style="background: #000B14; padding: 60px; justify-content: space-between; align-items: center; text-align: center; min-height: 600px;">
+        <div style="background: #051929; padding: 10px 24px; border-radius: 9999px; font-family: var(--font-heading); font-size: 18px; font-weight: 600; color: #19A7CE; letter-spacing: -0.03em;">JOHN 3:16-17</div>
+        <div style="font-size: 32px; line-height: 1.65; color: #FCF7F0; max-width: 900px;">
+          <span style="font-family: var(--font-heading); font-size: 20px; font-weight: 600; color: #19A7CE; vertical-align: super; margin-right: 6px;">16</span>For God so loved the world, that he gave his only born Son, that whoever believes in him should not perish, but have eternal life.
+        </div>
+        <div style="font-size: 12px; color: #8D9AA6; letter-spacing: 1px;">REVEAL LIVE • SALFORD YOUNG ADULTS</div>
+      </div>
+
+      <div class="variant-section var-b" style="background: #000000; padding: 60px; justify-content: space-between; align-items: center; text-align: center; min-height: 600px;">
+        <div style="background: #0A0A0A; padding: 10px 24px; border-radius: 9999px; font-family: var(--font-heading); font-size: 18px; font-weight: 600; color: #38BDF8; letter-spacing: -0.03em;">JOHN 3:16-17</div>
+        <div style="font-size: 32px; line-height: 1.65; color: #FFFFFF; max-width: 900px;">
+          <span style="font-family: var(--font-heading); font-size: 20px; font-weight: 600; color: #38BDF8; vertical-align: super; margin-right: 6px;">16</span>For God so loved the world, that he gave his only born Son...
+        </div>
+        <div style="font-size: 12px; color: #64748B; letter-spacing: 1px;">REVEAL SWISS MONOLITH</div>
+      </div>
+
+      <div class="variant-section var-c" style="background: #1A1410; padding: 60px; justify-content: space-between; align-items: center; text-align: center; min-height: 600px;">
+        <div style="background: #2A2018; padding: 10px 24px; border-radius: 9999px; font-family: var(--font-heading); font-size: 18px; font-weight: 600; color: #B87333; letter-spacing: -0.03em;">JOHN 3:16-17</div>
+        <div style="font-size: 32px; line-height: 1.65; color: #F3E9DC; max-width: 900px;">
+          <span style="font-family: var(--font-heading); font-size: 20px; font-weight: 600; color: #B87333; vertical-align: super; margin-right: 6px;">16</span>For God so loved the world, that he gave his only born Son...
+        </div>
+        <div style="font-size: 12px; color: #8C7B70; letter-spacing: 1px;">REVEAL WARM SANCTUARY</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    let currentScreen = 'dashboard';
+    let currentVariant = 'var-a';
+
+    function switchScreen(screen) {
+      currentScreen = screen;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.querySelectorAll('.screen-view').forEach(s => s.style.display = 'none');
+      const activeScreen = document.getElementById(`screen-${screen}`);
+      activeScreen.style.display = 'block';
+
+      updateVariantView();
+    }
+
+    function switchVariant(variant) {
+      currentVariant = variant;
+      document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      updateVariantView();
+    }
+
+    function updateVariantView() {
+      const activeScreen = document.getElementById(`screen-${currentScreen}`);
+      activeScreen.querySelectorAll('.variant-section').forEach(v => v.classList.remove('active'));
+      const activeVariant = activeScreen.querySelector(`.${currentVariant}`);
+      if (activeVariant) activeVariant.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

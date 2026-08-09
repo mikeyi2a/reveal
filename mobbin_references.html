@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reveal — Real Mobbin MCP UI References Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #000B14;
+      --bg-card: #051929;
+      --bg-fill: #0A273D;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --text-primary: #FCF7F0;
+      --text-muted: #8D9AA6;
+      --accent-cyan: #19A7CE;
+      --status-success: #12D453;
+      --status-error: #EF4444;
+      --font-heading: 'Figtree', sans-serif;
+      --font-body: 'Geist', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-page); color: var(--text-primary); font-family: var(--font-body); line-height: 1.6; padding: 40px 60px; }
+
+    header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; }
+    .title-group h1 { font-family: var(--font-heading); font-size: 30px; font-weight: 600; color: var(--accent-cyan); letter-spacing: -0.03em; }
+    .title-group p { color: var(--text-muted); font-size: 15px; margin-top: 6px; }
+
+    .badge-bar { display: flex; gap: 12px; }
+    .badge { background: var(--bg-fill); border-radius: 9999px; padding: 6px 16px; font-size: 13px; color: var(--text-primary); font-weight: 500; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 28px; }
+    .card { background: var(--bg-card); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 16px; border: 1px solid var(--border-subtle); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; }
+    .app-title { font-family: var(--font-heading); font-size: 18px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.03em; }
+    .app-category { background: var(--bg-fill); color: var(--accent-cyan); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 500; text-transform: uppercase; }
+
+    .image-wrapper { background: var(--bg-page); border-radius: 10px; overflow: hidden; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-subtle); min-height: 240px; }
+    .image-wrapper img { width: 100%; height: auto; display: block; object-fit: contain; }
+
+    .card-footer { display: flex; flex-direction: column; gap: 12px; }
+    .mobbin-link { font-size: 13px; color: var(--accent-cyan); text-decoration: none; font-weight: 500; }
+    .mobbin-link:hover { text-decoration: underline; }
+
+    .feedback-bar { display: flex; gap: 10px; }
+    .vote-btn { flex: 1; padding: 8px; border-radius: 6px; border: none; font-family: var(--font-heading); font-size: 12px; font-weight: 600; cursor: pointer; background: var(--bg-fill); color: var(--text-muted); transition: all 0.2s ease; }
+    .vote-btn.like.active { background: rgba(18, 212, 83, 0.15); color: var(--status-success); border: 1px solid var(--status-success); }
+    .vote-btn.dislike.active { background: rgba(239, 68, 68, 0.15); color: var(--status-error); border: 1px solid var(--status-error); }
+
+    .summary-panel { position: fixed; bottom: 30px; right: 40px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 16px 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 20px; z-index: 100; }
+    .summary-text { font-size: 14px; color: var(--text-primary); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>Reveal — Real Mobbin MCP UI Reference Gallery</h1>
+      <p>Fetched live via Mobbin MCP API across audio, speech, transcription, live stream, & presentation apps.</p>
+    </div>
+    <div class="badge-bar">
+      <div class="badge">24 Mobbin MCP Screens</div>
+      <div class="badge">Live Mobbin API Connected</div>
+    </div>
+  </header>
+
+  <div class="grid">
+    
+    <div class="card" data-category="audio">
+      <div class="card-header">
+        <span class="app-title">Open</span>
+        <span class="app-category">Mobbin / audio</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/87147ff7-2a07-4866-ae9a-fcd96cf1fef9" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/p8tJ9gR9" alt="Open Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/87147ff7-2a07-4866-ae9a-fcd96cf1fef9" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Open (87147ff7-2a07-4866-ae9a-fcd96cf1fef9)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Open (87147ff7-2a07-4866-ae9a-fcd96cf1fef9)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="audio">
+      <div class="card-header">
+        <span class="app-title">Spotify</span>
+        <span class="app-category">Mobbin / audio</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/4d524ef0-fa19-44af-bb10-c212cf8c2ac1" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/NqZ1PHlY" alt="Spotify Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/4d524ef0-fa19-44af-bb10-c212cf8c2ac1" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Spotify (4d524ef0-fa19-44af-bb10-c212cf8c2ac1)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Spotify (4d524ef0-fa19-44af-bb10-c212cf8c2ac1)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="audio">
+      <div class="card-header">
+        <span class="app-title">[untitled]</span>
+        <span class="app-category">Mobbin / audio</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/fb6ba939-8bf7-4d59-a1f7-a76fee47efeb" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/suNQwSRO" alt="[untitled] Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/fb6ba939-8bf7-4d59-a1f7-a76fee47efeb" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, '[untitled] (fb6ba939-8bf7-4d59-a1f7-a76fee47efeb)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, '[untitled] (fb6ba939-8bf7-4d59-a1f7-a76fee47efeb)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="audio">
+      <div class="card-header">
+        <span class="app-title">YouTube Music</span>
+        <span class="app-category">Mobbin / audio</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/7a79d6fe-f759-4cca-a1e4-2b663382511a" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/RLi8misN" alt="YouTube Music Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/7a79d6fe-f759-4cca-a1e4-2b663382511a" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'YouTube Music (7a79d6fe-f759-4cca-a1e4-2b663382511a)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'YouTube Music (7a79d6fe-f759-4cca-a1e4-2b663382511a)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="speech">
+      <div class="card-header">
+        <span class="app-title">VEED</span>
+        <span class="app-category">Mobbin / speech</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/e254a357-bf0f-42b3-8fbf-35d70e724c9b" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/VeiIvT7K" alt="VEED Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/e254a357-bf0f-42b3-8fbf-35d70e724c9b" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'VEED (e254a357-bf0f-42b3-8fbf-35d70e724c9b)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'VEED (e254a357-bf0f-42b3-8fbf-35d70e724c9b)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="speech">
+      <div class="card-header">
+        <span class="app-title">ElevenLabs</span>
+        <span class="app-category">Mobbin / speech</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/aeb449e2-a689-483a-8abb-915751e1a323" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/DX9IhNjA" alt="ElevenLabs Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/aeb449e2-a689-483a-8abb-915751e1a323" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'ElevenLabs (aeb449e2-a689-483a-8abb-915751e1a323)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'ElevenLabs (aeb449e2-a689-483a-8abb-915751e1a323)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="speech">
+      <div class="card-header">
+        <span class="app-title">Grok</span>
+        <span class="app-category">Mobbin / speech</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/f751d849-26a0-4ae4-a8e2-0a751def512c" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/wj3av2iS" alt="Grok Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/f751d849-26a0-4ae4-a8e2-0a751def512c" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Grok (f751d849-26a0-4ae4-a8e2-0a751def512c)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Grok (f751d849-26a0-4ae4-a8e2-0a751def512c)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="speech">
+      <div class="card-header">
+        <span class="app-title">Mistral AI</span>
+        <span class="app-category">Mobbin / speech</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/8ef447b2-0712-42db-999e-c14161be1262" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/e2u588Ti" alt="Mistral AI Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/8ef447b2-0712-42db-999e-c14161be1262" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Mistral AI (8ef447b2-0712-42db-999e-c14161be1262)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Mistral AI (8ef447b2-0712-42db-999e-c14161be1262)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="transcription">
+      <div class="card-header">
+        <span class="app-title">VEED</span>
+        <span class="app-category">Mobbin / transcription</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/777cc01f-fd78-4fda-8ea0-11a2273c1c4f" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/tkzu2uHI" alt="VEED Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/777cc01f-fd78-4fda-8ea0-11a2273c1c4f" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'VEED (777cc01f-fd78-4fda-8ea0-11a2273c1c4f)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'VEED (777cc01f-fd78-4fda-8ea0-11a2273c1c4f)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="transcription">
+      <div class="card-header">
+        <span class="app-title">ElevenLabs</span>
+        <span class="app-category">Mobbin / transcription</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/6cb17412-afe7-40e1-825d-bcfccb67b6fe" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/xmCETcU3" alt="ElevenLabs Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/6cb17412-afe7-40e1-825d-bcfccb67b6fe" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'ElevenLabs (6cb17412-afe7-40e1-825d-bcfccb67b6fe)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'ElevenLabs (6cb17412-afe7-40e1-825d-bcfccb67b6fe)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="transcription">
+      <div class="card-header">
+        <span class="app-title">Mistral AI</span>
+        <span class="app-category">Mobbin / transcription</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/93863599-531f-447f-abde-03af324bb7bd" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/zdr6ZFpc" alt="Mistral AI Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/93863599-531f-447f-abde-03af324bb7bd" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Mistral AI (93863599-531f-447f-abde-03af324bb7bd)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Mistral AI (93863599-531f-447f-abde-03af324bb7bd)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="transcription">
+      <div class="card-header">
+        <span class="app-title">Descript</span>
+        <span class="app-category">Mobbin / transcription</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/925ed32d-1adb-49e2-b7bb-1bfa7edbd78c" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/1oyacW9g" alt="Descript Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/925ed32d-1adb-49e2-b7bb-1bfa7edbd78c" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Descript (925ed32d-1adb-49e2-b7bb-1bfa7edbd78c)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Descript (925ed32d-1adb-49e2-b7bb-1bfa7edbd78c)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="presentation">
+      <div class="card-header">
+        <span class="app-title">Pitch</span>
+        <span class="app-category">Mobbin / presentation</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/f0fbc334-3bde-4bea-b9bc-e4031d5a8fbe" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/AvT3hL0c" alt="Pitch Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/f0fbc334-3bde-4bea-b9bc-e4031d5a8fbe" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Pitch (f0fbc334-3bde-4bea-b9bc-e4031d5a8fbe)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Pitch (f0fbc334-3bde-4bea-b9bc-e4031d5a8fbe)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="presentation">
+      <div class="card-header">
+        <span class="app-title">Adobe Express</span>
+        <span class="app-category">Mobbin / presentation</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/4fc2812c-76b6-4b9b-8ed6-6b231d5a0dc7" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/7LDTU6ZQ" alt="Adobe Express Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/4fc2812c-76b6-4b9b-8ed6-6b231d5a0dc7" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Adobe Express (4fc2812c-76b6-4b9b-8ed6-6b231d5a0dc7)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Adobe Express (4fc2812c-76b6-4b9b-8ed6-6b231d5a0dc7)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="presentation">
+      <div class="card-header">
+        <span class="app-title">Gamma</span>
+        <span class="app-category">Mobbin / presentation</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/d0795af4-acbf-4e1b-a48b-64622de9f1c9" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/wXpvZURE" alt="Gamma Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/d0795af4-acbf-4e1b-a48b-64622de9f1c9" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Gamma (d0795af4-acbf-4e1b-a48b-64622de9f1c9)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Gamma (d0795af4-acbf-4e1b-a48b-64622de9f1c9)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="presentation">
+      <div class="card-header">
+        <span class="app-title">Canva</span>
+        <span class="app-category">Mobbin / presentation</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/e48e70c1-7156-476f-a5b9-c942bf8b8dce" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/2d39i5bs" alt="Canva Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/e48e70c1-7156-476f-a5b9-c942bf8b8dce" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Canva (e48e70c1-7156-476f-a5b9-c942bf8b8dce)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Canva (e48e70c1-7156-476f-a5b9-c942bf8b8dce)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="live stream">
+      <div class="card-header">
+        <span class="app-title">Circle</span>
+        <span class="app-category">Mobbin / live stream</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/10ef99b3-c1fc-4fe2-9a5a-c5356e6b9158" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/8dqm8oYt" alt="Circle Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/10ef99b3-c1fc-4fe2-9a5a-c5356e6b9158" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Circle (10ef99b3-c1fc-4fe2-9a5a-c5356e6b9158)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Circle (10ef99b3-c1fc-4fe2-9a5a-c5356e6b9158)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="live stream">
+      <div class="card-header">
+        <span class="app-title">Substack</span>
+        <span class="app-category">Mobbin / live stream</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/cead5524-3612-4935-ac7c-9c9e5529cb28" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/CM5Eb8VB" alt="Substack Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/cead5524-3612-4935-ac7c-9c9e5529cb28" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Substack (cead5524-3612-4935-ac7c-9c9e5529cb28)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Substack (cead5524-3612-4935-ac7c-9c9e5529cb28)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="live stream">
+      <div class="card-header">
+        <span class="app-title">Whop</span>
+        <span class="app-category">Mobbin / live stream</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/c8d920f4-793e-4f17-8923-6508068ce20e" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/kjId1mjC" alt="Whop Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/c8d920f4-793e-4f17-8923-6508068ce20e" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Whop (c8d920f4-793e-4f17-8923-6508068ce20e)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Whop (c8d920f4-793e-4f17-8923-6508068ce20e)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="live stream">
+      <div class="card-header">
+        <span class="app-title">Riverside</span>
+        <span class="app-category">Mobbin / live stream</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/ad4edf54-7675-4050-b03c-9b1f99e2a3e4" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/6is2vVy6" alt="Riverside Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/ad4edf54-7675-4050-b03c-9b1f99e2a3e4" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Riverside (ad4edf54-7675-4050-b03c-9b1f99e2a3e4)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Riverside (ad4edf54-7675-4050-b03c-9b1f99e2a3e4)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="dashboard">
+      <div class="card-header">
+        <span class="app-title">Pinterest</span>
+        <span class="app-category">Mobbin / dashboard</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/22864846-19a6-4f9d-af14-fb6322a75cd9" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/SVgHiOWO" alt="Pinterest Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/22864846-19a6-4f9d-af14-fb6322a75cd9" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Pinterest (22864846-19a6-4f9d-af14-fb6322a75cd9)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Pinterest (22864846-19a6-4f9d-af14-fb6322a75cd9)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="dashboard">
+      <div class="card-header">
+        <span class="app-title">Mixpanel</span>
+        <span class="app-category">Mobbin / dashboard</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/55fc4611-f390-44c5-a722-30c74789c6d2" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/Rx017upZ" alt="Mixpanel Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/55fc4611-f390-44c5-a722-30c74789c6d2" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Mixpanel (55fc4611-f390-44c5-a722-30c74789c6d2)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Mixpanel (55fc4611-f390-44c5-a722-30c74789c6d2)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="dashboard">
+      <div class="card-header">
+        <span class="app-title">Base44</span>
+        <span class="app-category">Mobbin / dashboard</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/7f34404c-ba21-432f-a80e-68ba834ebbd8" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/9qOAaq80" alt="Base44 Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/7f34404c-ba21-432f-a80e-68ba834ebbd8" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Base44 (7f34404c-ba21-432f-a80e-68ba834ebbd8)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Base44 (7f34404c-ba21-432f-a80e-68ba834ebbd8)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" data-category="dashboard">
+      <div class="card-header">
+        <span class="app-title">Framer</span>
+        <span class="app-category">Mobbin / dashboard</span>
+      </div>
+
+      <div class="image-wrapper">
+        <a href="https://mobbin.com/screens/27a96864-839c-45f8-b1f4-479672827122" target="_blank" title="View on Mobbin">
+          <img src="https://mobbin.com/api/mcp/short/AyxTWlm6" alt="Framer Mobbin UI Screen" loading="lazy" />
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <a href="https://mobbin.com/screens/27a96864-839c-45f8-b1f4-479672827122" target="_blank" class="mobbin-link">View Full Flow on Mobbin ↗</a>
+        <div class="feedback-bar">
+          <button class="vote-btn like" onclick="vote(this, 'Framer (27a96864-839c-45f8-b1f4-479672827122)')">👍 Like</button>
+          <button class="vote-btn dislike" onclick="vote(this, 'Framer (27a96864-839c-45f8-b1f4-479672827122)')">👎 Dislike</button>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
+  <div class="summary-panel">
+    <div class="summary-text" id="summaryCount">0 Mobbin Screens Liked</div>
+  </div>
+
+  <script>
+    const likes = new Set();
+    function vote(btn, name) {
+      const parent = btn.parentElement;
+      const likeBtn = parent.querySelector('.like');
+      const dislikeBtn = parent.querySelector('.dislike');
+
+      if (btn.classList.contains('like')) {
+        likeBtn.classList.toggle('active');
+        dislikeBtn.classList.remove('active');
+        if (likeBtn.classList.contains('active')) likes.add(name);
+        else likes.delete(name);
+      } else {
+        dislikeBtn.classList.toggle('active');
+        likeBtn.classList.remove('active');
+        likes.delete(name);
+      }
+      document.getElementById('summaryCount').innerText = `${likes.size} Mobbin Screen(s) Liked`;
+    }
+  </script>
+</body>
+</html>
