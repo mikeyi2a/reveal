@@ -105,7 +105,10 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
   const stabilizerRef = useRef(new ReferenceStabilizer());
   const scannedFinalIdsRef = useRef(new Set<string>());
 
-  const pendingVerse = detectionQueue[0] ?? null;
+  // The newest detection is the last item in the FIFO queue; it carries the
+  // BorderBeam emphasis on the dashboard. Confirming/dismissing removes items,
+  // so "newest" naturally advances as the operator works the queue.
+  const pendingVerse = detectionQueue[detectionQueue.length - 1] ?? null;
 
   // Auto-start when the operator opens any console tab. We deliberately never
   // auto-stop on route change — the session outlives tab switches.

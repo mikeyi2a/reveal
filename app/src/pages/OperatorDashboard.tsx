@@ -190,7 +190,7 @@ export default function OperatorDashboard() {
   }, []);
 
   const recentSegments = segments.slice(-OPACITY_STEPS.length);
-
+  const newestDetection = detectionQueue.length > 0 ? detectionQueue[detectionQueue.length - 1].detection : null;
   const backendLabel = whisperBackend === 'webgpu' ? 'WebGPU' : whisperBackend === 'wasm' ? 'WASM' : null;
   const whisperStatusColor = whisperStatus === 'error' ? '#EF4444' : whisperStatus === 'listening' ? '#12D453' : '#EAB308';
   const whisperStatusLabel =
@@ -254,7 +254,7 @@ export default function OperatorDashboard() {
         })}
       </div>
 
-      <main ref={mainRef} style={{ display: 'flex', flex: 1, minHeight: 0, gap: 0, paddingBlock: '8px', paddingInline: '24px', overflow: 'visible' }}>
+      <main ref={mainRef} style={{ display: 'flex', flex: 1, minHeight: 0, gap: 0, paddingTop: '8px', paddingBottom: 0, paddingInline: '24px', overflow: 'visible' }}>
         {/* LEFT COLUMN — shrunk: the live transcript is honest context, not the
             focus. The verse detection & matching column is the primary surface. */}
         <div style={{ display: 'flex', flex: '0 0 auto', width: `${leftWidth}px`, minWidth: 0, minHeight: 0, overflow: 'visible' }}>
