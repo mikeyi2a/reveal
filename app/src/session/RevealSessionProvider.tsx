@@ -71,6 +71,7 @@ export interface RevealSessionValue {
   displayItem: (item: VerseDetectionQueueItem) => void;
   dismissItem: (id: string) => void;
   runManualSearch: () => void;
+  displayLatencyMs: number | null;
 
   pendingVerse: VerseDetectionQueueItem | null;
 }
@@ -94,6 +95,8 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
   const [live, setLive] = useState<LiveState>({ mic: true, video: false, system: false });
   const [sessionSeconds, setSessionSeconds] = useState(0);
   const [manualQuery, setManualQuery] = useState('');
+  const [displayLatencyMs, setDisplayLatencyMs] = useState<number | null>(null);
+  const displayStartRef = useRef<number | null>(null);
 
   // Resources only run while a session is active, so navigating away (or to
   // the Landing / Projector) keeps the same session alive instead of tearing
@@ -213,12 +216,23 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
   }, [segments, autoPush, bibleReady, projectBatch, toQueueItems]);
 
   // Displays a batch to the projector, then drops it from the queue and logs it
-  // to recently detected so it can be re-projected.
+  // to recently detected so it can be re-projected. Times the round trip from
+  // the operator's click to the projector state committing, so the dashboard's
+  // "Display Latency" card reflects real on-screen delay (not model load time).
   const displayItem = (item: VerseDetectionQueueItem) => {
+    displayStartRef.current = performance.now();
     projectBatch(item.detection, item.batch);
     setDetectionQueue((prev) => prev.filter((i) => i.id !== item.id));
     setRecentDetections((prev) => [item, ...prev].slice(0, 5));
   };
+
+  // Compute display latency once the projector state actually commits.
+  useEffect(() => {
+    if (projector && displayStartRef.current != null) {
+      setDisplayLatencyMs(performance.now() - displayStartRef.current);
+      displayStartRef.current = null;
+    }
+  }, [projector]);
 
   const dismissItem = (id: string) => {
     setDetectionQueue((prev) => prev.filter((i) => i.id !== id));
@@ -269,6 +283,8 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     scannedFinalIdsRef.current.clear();
     stabilizerRef.current.reset();
     setProjectorState(null);
+    setDisplayLatencyMs(null);
+    displayStartRef.current = null;
   };
 
   const value: RevealSessionValue = {
@@ -296,6 +312,7 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     displayItem,
     dismissItem,
     runManualSearch,
+    displayLatencyMs,
     pendingVerse,
   };
 

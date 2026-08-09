@@ -146,6 +146,7 @@ export default function OperatorDashboard() {
     dismissItem,
     runManualSearch,
     pendingVerse,
+    displayLatencyMs,
     endSession,
   } = session;
 
@@ -248,7 +249,7 @@ export default function OperatorDashboard() {
   const avgConfidenceStr = avgConfidenceNum !== null ? `${avgConfidenceNum.toFixed(1)}%` : '--';
   const avgConfidenceColor = avgConfidenceNum !== null ? confidenceColor(avgConfidenceNum) : '#8D9AA6';
 
-  const displayLatencyStr = modelLoadMs != null ? `${Math.round(modelLoadMs)}ms` : '--';
+  const displayLatencyStr = displayLatencyMs != null ? `${Math.round(displayLatencyMs)}ms` : '--';
 
   const onScreenNowStr = projector ? projector.ref : '--';
 
