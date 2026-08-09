@@ -152,12 +152,15 @@ button {
   }
 }
 
-/* The detection queue scroll column fades out at the bottom so cards melt off
- * instead of hard-cutting. Mask is visual only — the area stays scrollable. */
-.detection-fade {
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 30px), transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 30px), transparent 100%);
-/* The column divider line stays hidden until hovered or dragged. */
+/* The detection queue fades out at the bottom ONLY when its content overflows
+ * the container (more cards than fit). A short list that fits shows no fade, so
+ * it never looks artificially cut off. Mask is purely visual — still scrollable. */
+.detection-fade.is-overflowing {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 28px), transparent 100%);
+}
+
+/* Column divider line stays hidden until hovered or dragged. */
 .col-divider-line {
   width: 2px;
   height: 24%;

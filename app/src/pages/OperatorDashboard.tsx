@@ -151,6 +151,19 @@ export default function OperatorDashboard() {
 
   const [showEndModal, setShowEndModal] = useState(false);
   const previewBoxRef = useRef<HTMLButtonElement>(null);
+  // Fade the bottom of the detection queue ONLY when it overflows the container
+  // (more cards than fit). A short list that fits shows no fade.
+  const queueScrollRef = useRef<HTMLDivElement>(null);
+  const [queueOverflowing, setQueueOverflowing] = useState(false);
+  useEffect(() => {
+    const el = queueScrollRef.current;
+    if (!el) return;
+    const measure = () => setQueueOverflowing(el.scrollHeight > el.clientHeight + 1);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [detectionQueue]);
 
   // Resizable columns: left (transcript) and right (projector + recent) hold a
   // fixed px width; the center (detection & matching) takes the remaining space.
@@ -378,12 +391,22 @@ export default function OperatorDashboard() {
                 </span>
               </div>
             ) : (
-              <div className="scroll-region detection-fade" style={{ display: 'flex', flexDirection: 'column', gap: '8px', minHeight: 0, overflowY: 'auto', paddingRight: '4px' }}>
+              <div ref={queueScrollRef} className={`scroll-region detection-fade${queueOverflowing ? ' is-overflowing' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '8px', minHeight: 0, overflowY: 'auto', paddingRight: '4px' }}>
                 {orderedDetections.map((item) => {
                   const isNewest = item.detection === newestDetection;
                   const isPrimary = item.isPrimary && isNewest;
                   return isPrimary ? (
-                    <BorderBeam key={item.id} size="pulse-outside" colorVariant="ocean" theme="dark" strength={0.4} style={{ borderRadius: '12px' }}>
+                    <BorderBeam
+                      key={item.id}
+                      size="pulse-outside"
+                      colorVariant="ocean"
+                      theme="dark"
+                      strength={0.85}
+                      brightness={2.0}
+                      saturation={2.2}
+                      duration={2.2}
+                      style={{ borderRadius: '12px' }}
+                    >
                       <div
                         style={{
                           alignItems: 'flex-start',
