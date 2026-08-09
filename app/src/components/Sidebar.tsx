@@ -8,6 +8,7 @@ import {
   GearIcon,
   SidebarSimpleIcon,
 } from '@phosphor-icons/react';
+import { openProjectorWindow } from '../lib/revealStore';
 
 const navItems = [
   { label: 'Live Console', icon: BroadcastIcon, path: '/dashboard' },
@@ -99,7 +100,15 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 aria-label={item.label}
                 aria-current={isActive ? 'page' : undefined}
                 disabled={isDisabled}
-                onClick={() => item.path && navigate(item.path)}
+                onClick={() => {
+                  if (item.path === '/projector') {
+                    // The projector is a dedicated output surface — always send
+                    // it to a new window so the operator console stays put.
+                    openProjectorWindow();
+                  } else if (item.path) {
+                    navigate(item.path);
+                  }
+                }}
                 className="nav-item"
                 style={{
                   alignItems: 'center',

@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { Agentation } from 'agentation';
 import { DialRoot } from 'dialkit';
 import Landing from './pages/Landing';
@@ -9,6 +9,11 @@ import ProjectorView from './pages/ProjectorView';
 import { RevealSessionProvider } from './session/RevealSessionProvider';
 
 export default function App() {
+  const location = useLocation();
+  // The projector output is a clean wall — keep the operator/dev floating
+  // widgets off it so nothing leaks onto the physical display.
+  const isProjector = location.pathname.startsWith('/projector');
+
   return (
     <RevealSessionProvider>
       <Routes>
@@ -18,8 +23,8 @@ export default function App() {
         <Route path="/dashboard" element={<OperatorDashboard />} />
         <Route path="/projector" element={<ProjectorView />} />
       </Routes>
-      <DialRoot position="bottom-right" defaultOpen={true} />
-      {import.meta.env.DEV && <Agentation />}
+      {!isProjector && <DialRoot position="bottom-right" defaultOpen={true} />}
+      {!isProjector && import.meta.env.DEV && <Agentation />}
     </RevealSessionProvider>
   );
 }

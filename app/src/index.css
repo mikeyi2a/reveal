@@ -160,6 +160,14 @@ button {
   mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 28px), transparent 100%);
 }
 
+/* The live-transcription stream pins newest to the bottom and scrolls older
+ * history up. When it overflows we fade the TOP edge (not the bottom) so the
+ * cut-off points at the older material above. Same overflow-only logic. */
+.transcript-fade.is-overflowing {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 28px, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 28px, #000 100%);
+}
+
 /* Column divider line stays hidden until hovered or dragged. */
 .col-divider-line {
   width: 2px;

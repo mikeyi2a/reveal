@@ -11,6 +11,7 @@ import {
   WaveformIcon,
   GaugeIcon,
   MonitorPlayIcon,
+  ArrowsOutIcon,
   MagnifyingGlassIcon,
 } from '@phosphor-icons/react';
 
@@ -22,6 +23,7 @@ import PrimaryButton from '../components/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import IconToggle from '../components/IconToggle';
 import { useRevealSession } from '../session/RevealSessionProvider';
+import { openProjectorWindow } from '../lib/revealStore';
 import type { Confidence } from '../lib/referenceScanner';
 
 const MIN_LEFT = 260;
@@ -165,6 +167,20 @@ export default function OperatorDashboard() {
     ro.observe(el);
     return () => ro.disconnect();
   }, [detectionQueue]);
+
+  // Same overflow-only logic for the live-transcription stream: newest segment
+  // is pinned to the bottom, so when it overflows we fade the TOP edge.
+  const transcriptScrollRef = useRef<HTMLDivElement>(null);
+  const [transcriptOverflowing, setTranscriptOverflowing] = useState(false);
+  useEffect(() => {
+    const el = transcriptScrollRef.current;
+    if (!el) return;
+    const measure = () => setTranscriptOverflowing(el.scrollHeight > el.clientHeight + 1);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [segments]);
 
   // Resizable columns: left (transcript) and right (projector + recent) hold a
   // fixed px width; the center (detection & matching) takes the remaining space.
@@ -311,7 +327,7 @@ export default function OperatorDashboard() {
                 <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', fontWeight: 500 }}>{whisperStatusLabel}</span>
               </div>
             </div>
-            <div className="scroll-region" style={{ display: 'flex', flex: '1 1 0%', flexDirection: 'column', gap: '8px', justifyContent: 'flex-end', minHeight: 0, overflowY: 'auto', padding: '4px' }}>
+            <div ref={transcriptScrollRef} className={`scroll-region transcript-fade${transcriptOverflowing ? ' is-overflowing' : ''}`} style={{ display: 'flex', flex: '1 1 0%', flexDirection: 'column', gap: '8px', justifyContent: 'flex-end', minHeight: 0, overflowY: 'auto', padding: '4px' }}>
               {whisperStatus === 'error' ? (
                 <div style={{ backgroundColor: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '10px', padding: '12px' }}>
                   <span style={{ color: '#EF4444', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px', lineHeight: 1.4 }}>{whisperError}</span>
@@ -510,14 +526,25 @@ export default function OperatorDashboard() {
                 <span style={{ backgroundColor: '#12D453', borderRadius: '9999px', height: '6px', width: '6px' }} />
                 <CardLabel>Now on projector (16:9)</CardLabel>
               </div>
-              <button
-                type="button"
-                onClick={() => setProjectorState(null)}
-                disabled={!projector}
-                style={{ background: 'none', border: 'none', color: projector ? '#8D9AA6' : '#3A4753', cursor: projector ? 'pointer' : 'default', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', fontWeight: 500, padding: 0 }}
-              >
-                Clear screen
-              </button>
+              <div style={{ alignItems: 'center', display: 'flex', gap: '12px' }}>
+                <button
+                  type="button"
+                  onClick={() => openProjectorWindow()}
+                  title="Open the projector on a second screen"
+                  style={{ alignItems: 'center', background: 'none', border: 'none', color: '#19A7CE', cursor: 'pointer', display: 'inline-flex', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', fontWeight: 500, gap: '5px', padding: 0 }}
+                >
+                  <ArrowsOutIcon size={13} weight="regular" />
+                  Open window
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setProjectorState(null)}
+                  disabled={!projector}
+                  style={{ background: 'none', border: 'none', color: projector ? '#8D9AA6' : '#3A4753', cursor: projector ? 'pointer' : 'default', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', fontWeight: 500, padding: 0 }}
+                >
+                  Clear screen
+                </button>
+              </div>
             </div>
             <button
               type="button"

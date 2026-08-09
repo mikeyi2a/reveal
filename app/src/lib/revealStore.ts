@@ -56,3 +56,29 @@ export function useProjectorState(): [ProjectorState | null, (s: ProjectorState 
 
   return [state, set];
 }
+
+/**
+ * Opens the standalone projector route in a separate browser window — intended
+ * to be dragged onto a second monitor (then F11 to fullscreen). The operator
+ * app stays fully interactive on the primary screen; live updates stream over
+ * to the new window via the shared localStorage sync in `useProjectorState`.
+ *
+ * Returns the opened window (or null if the browser blocked the popup — which
+ * happens when this isn't called directly from a user click).
+ */
+export function openProjectorWindow(): Window | null {
+  const features = [
+    'width=1280',
+    'height=720',
+    'menubar=no',
+    'toolbar=no',
+    'location=no',
+    'status=no',
+    'resizable=yes',
+  ].join(',');
+  const base = `${window.location.origin}${window.location.pathname}`;
+  const url = base.endsWith('/') ? `${base}projector` : `${base.replace(/\/[^/]*$/, '/')}projector`;
+  const win = window.open(url, 'reveal-projector', features);
+  if (win) win.focus();
+  return win;
+}
