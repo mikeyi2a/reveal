@@ -321,6 +321,24 @@ export default function OperatorDashboard() {
               )}
             </div>
 
+            {/* Manual lookup — force a detection without waiting for speech.
+                Pinned to the top so it's always reachable, above the live queue. */}
+            <div style={{ alignItems: 'center', display: 'flex', gap: '8px' }}>
+              <div style={{ alignItems: 'center', backgroundColor: '#0A273D', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '9999px', display: 'flex', flex: '1 1 auto', gap: '8px', height: '36px', paddingInline: '12px' }}>
+                <MagnifyingGlassIcon size={14} weight="regular" color="#5B6B78" />
+                <input
+                  value={manualQuery}
+                  onChange={(e) => setManualQuery(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') runManualSearch(); }}
+                  placeholder="Manual lookup — e.g. Romans 8:28-30"
+                  style={{ background: 'none', border: 'none', color: '#FCF7F0', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px', outline: 'none', width: '100%' }}
+                />
+              </div>
+              <SecondaryButton onClick={runManualSearch} style={{ fontSize: '12px', height: '36px', paddingBlock: 0, paddingInline: '16px' }}>
+                Search
+              </SecondaryButton>
+            </div>
+
             {detectionQueue.length === 0 ? (
               <div style={{ alignItems: 'center', backgroundColor: '#0A273D', borderRadius: '12px', display: 'flex', gap: '8px', justifyContent: 'center', paddingBlock: '12px' }}>
                 <WaveformIcon size={14} weight="regular" color={unresolvedRef ? '#EAB308' : '#5B6B78'} />
@@ -330,8 +348,10 @@ export default function OperatorDashboard() {
               </div>
             ) : (
               <div className="scroll-region" style={{ display: 'flex', flexDirection: 'column', gap: '8px', minHeight: 0, overflowY: 'auto', paddingRight: '4px' }}>
-                {detectionQueue.map((item) =>
-                  item.isPrimary ? (
+                {detectionQueue.slice().reverse().map((item) => {
+                  const isNewest = item.detection === newestDetection;
+                  const isPrimary = item.isPrimary && isNewest;
+                  return isPrimary ? (
                     <BorderBeam key={item.id} size="pulse-outside" colorVariant="ocean" theme="dark" strength={0.4} style={{ borderRadius: '12px' }}>
                       <div
                         style={{
@@ -412,58 +432,10 @@ export default function OperatorDashboard() {
                         </SecondaryButton>
                       </div>
                     </div>
-                  ),
-                )}
+                  );
+                })}
               </div>
             )}
-
-            {/* Manual lookup — force a detection without waiting for speech. */}
-            <div style={{ alignItems: 'stretch', borderTop: '1px solid rgba(255,255,255,0.07)', display: 'flex', gap: '8px', paddingTop: '10px' }}>
-              <div
-                style={{
-                  alignItems: 'center',
-                  backgroundColor: '#0A273D',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '9999px',
-                  boxSizing: 'border-box',
-                  display: 'flex',
-                  flex: '1 1 auto',
-                  gap: '8px',
-                  height: '36px',
-                  paddingInline: '12px',
-                }}
-              >
-                <MagnifyingGlassIcon size={14} weight="regular" color="#5B6B78" />
-                <input
-                  value={manualQuery}
-                  onChange={(e) => setManualQuery(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') runManualSearch(); }}
-                  placeholder="Manual lookup — e.g. Romans 8:28-30"
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#FCF7F0',
-                    fontFamily: '"Geist", system-ui, sans-serif',
-                    fontSize: '12px',
-                    outline: 'none',
-                    width: '100%',
-                  }}
-                />
-              </div>
-              <SecondaryButton
-                onClick={runManualSearch}
-                style={{
-                  boxSizing: 'border-box',
-                  fontSize: '12px',
-                  height: '36px',
-                  lineHeight: '34px',
-                  paddingBlock: 0,
-                  paddingInline: '16px',
-                }}
-              >
-                Search
-              </SecondaryButton>
-            </div>
           </Card>
         </div>
 
