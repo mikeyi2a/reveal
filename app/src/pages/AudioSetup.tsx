@@ -28,14 +28,14 @@ export default function AudioSetup() {
 
   return (
     <ConsoleLayout>
-      <header style={{ alignItems: 'center', display: 'flex', flexShrink: 0, height: '64px', justifyContent: 'space-between', paddingInline: '32px' }}>
+      <header style={{ alignItems: 'center', display: 'flex', flexShrink: 0, height: '64px', justifyContent: 'space-between', paddingInline: '24px' }}>
         <span style={{ color: '#FCF7F0', fontFamily: '"Figtree", system-ui, sans-serif', fontSize: '17px', fontWeight: 600, letterSpacing: '-0.03em' }}>
           Audio Setup
         </span>
         <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '13px' }}>Step 1 of 3</span>
       </header>
 
-      <main style={{ display: 'flex', flexGrow: 1, flexWrap: 'wrap', gap: '16px', paddingBlock: '8px', paddingInline: '32px' }}>
+      <main style={{ display: 'flex', flexGrow: 1, flexWrap: 'wrap', gap: '16px', paddingTop: '8px', paddingBottom: 0, paddingInline: '24px' }}>
         <div style={{ display: 'flex', flex: '1.3 1 560px', flexDirection: 'column', gap: '16px' }}>
           <Card style={{ gap: '24px', padding: '26px' }}>
             <div style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between' }}>
@@ -167,7 +167,7 @@ export default function AudioSetup() {
         </div>
       </main>
 
-      <footer style={{ alignItems: 'center', display: 'flex', flexShrink: 0, height: '88px', justifyContent: 'space-between', paddingInline: '32px' }}>
+      <footer style={{ alignItems: 'center', display: 'flex', flexShrink: 0, height: '72px', justifyContent: 'space-between', paddingInline: '24px' }}>
         <button
           type="button"
           onClick={() => navigate('/')}

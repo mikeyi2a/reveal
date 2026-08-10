@@ -42,14 +42,14 @@ export default function ThemeStudio() {
 
   return (
     <ConsoleLayout>
-      <header style={{ alignItems: 'center', display: 'flex', flexShrink: 0, height: '64px', justifyContent: 'space-between', paddingInline: '32px' }}>
+      <header style={{ alignItems: 'center', display: 'flex', flexShrink: 0, height: '64px', justifyContent: 'space-between', paddingInline: '24px' }}>
         <span style={{ color: '#FCF7F0', fontFamily: '"Figtree", system-ui, sans-serif', fontSize: '17px', fontWeight: 600, letterSpacing: '-0.03em' }}>
           Theme Studio
         </span>
         <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '13px' }}>Step 3 of 3</span>
       </header>
 
-      <main style={{ display: 'flex', flexGrow: 1, flexWrap: 'wrap', gap: '16px', paddingBlock: '8px', paddingInline: '32px' }}>
+      <main style={{ display: 'flex', flexGrow: 1, flexWrap: 'wrap', gap: '16px', paddingTop: '8px', paddingBottom: 0, paddingInline: '24px' }}>
         <Card style={{ alignItems: 'center', flex: '1.4 1 480px', justifyContent: 'center', padding: '28px' }}>
           <div
             style={{
@@ -152,7 +152,7 @@ export default function ThemeStudio() {
         </Card>
       </main>
 
-      <footer style={{ alignItems: 'center', display: 'flex', flexShrink: 0, height: '88px', justifyContent: 'space-between', paddingInline: '32px' }}>
+      <footer style={{ alignItems: 'center', display: 'flex', flexShrink: 0, height: '72px', justifyContent: 'space-between', paddingInline: '24px' }}>
         <button
           type="button"
           onClick={() => navigate('/audio-setup')}

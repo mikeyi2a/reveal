@@ -31,7 +31,7 @@ export default function Landing() {
 
   return (
     <ConsoleLayout>
-      <header style={{ alignItems: 'center', display: 'flex', flexShrink: 0, height: '64px', justifyContent: 'space-between', paddingInline: '32px' }}>
+      <header style={{ alignItems: 'center', display: 'flex', flexShrink: 0, height: '64px', justifyContent: 'space-between', paddingInline: '24px' }}>
         <span style={{ color: '#19A7CE', fontFamily: '"Figtree", system-ui, sans-serif', fontSize: '18px', fontWeight: 600, letterSpacing: '-0.03em' }}>
           REVEAL
         </span>
@@ -41,7 +41,7 @@ export default function Landing() {
         </div>
       </header>
 
-      <main style={{ alignItems: 'center', display: 'flex', flexGrow: 1, flexWrap: 'wrap', gap: '56px', paddingBlock: '40px', paddingInline: '48px' }}>
+      <main style={{ alignItems: 'center', display: 'flex', flexGrow: 1, flexWrap: 'wrap', gap: '56px', paddingBlock: '40px', paddingInline: '24px' }}>
         <section style={{ display: 'flex', flex: '1 1 420px', flexDirection: 'column', gap: '22px', maxWidth: '560px' }}>
           <div style={{ alignItems: 'center', alignSelf: 'flex-start', backgroundColor: '#051929', borderRadius: '9999px', display: 'flex', gap: '8px', paddingBlock: '6px', paddingInline: '14px' }}>
             <span style={{ backgroundColor: '#19A7CE', borderRadius: '9999px', height: '5px', width: '5px' }} />
