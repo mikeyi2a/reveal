@@ -438,7 +438,7 @@ export default function OperatorDashboard() {
                 </span>
               </div>
             ) : (
-              <div ref={queueScrollRef} className={`scroll-region detection-fade${queueOverflowing ? ' is-overflowing' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '8px', minHeight: 0, overflowY: 'auto', paddingRight: '4px' }}>
+              <div ref={queueScrollRef} className={`scroll-region detection-fade${queueOverflowing ? ' is-overflowing' : ''}`} style={{ display: 'flex', flex: '1 1 0%', flexDirection: 'column', gap: '8px', minHeight: 0, overflow: queueOverflowing ? 'auto' : 'visible', paddingRight: '4px' }}>
                 {orderedDetections.map((item) => {
                   const isNewest = item.detection === newestDetection;
                   const isPrimary = item.isPrimary && isNewest;

@@ -106,25 +106,49 @@ const NUM_WORD_RE = new RegExp(
   'gi',
 );
 
-/** Converts a run of spoken number words ("twenty three", "one hundred nineteen")
- *  into its digit form. Leaves anything it can't parse untouched. */
+/** Converts a run of spoken number words to digits. Compounds that form a
+ *  single number ("twenty three" → 23, "one hundred nineteen" → 119) collapse
+ *  to one token; but two separate small numbers that are chapter + verse
+ *  ("seven fifteen") stay as TWO tokens ("7 15") so the pattern matcher can
+ *  resolve them as chapter 7 verse 15 rather than summing them. */
 function wordsToDigits(input: string): string {
   return input.replace(NUM_WORD_RE, (phrase) => {
     const parts = phrase.toLowerCase().split(/[\s-]+/).filter(Boolean);
-    let total = 0;
-    let current = 0;
+    const out: number[] = [];
+    let cur = 0;
+    let hasTens = false;
+    let hasOnes = false;
+    let hasScale = false;
+    const flush = () => {
+      if (cur > 0) {
+        out.push(cur);
+        cur = 0;
+        hasTens = hasOnes = hasScale = false;
+      }
+    };
     for (const p of parts) {
       const v = NUM_WORDS[p];
       if (v == null) return phrase; // bail — leave original words in place
       if (v === 100 || v === 1000) {
-        current = (current || 1) * v;
-        total += current;
-        current = 0;
+        if (hasTens && hasOnes && !hasScale) flush(); // closed compound, restart scale
+        cur = (cur || 1) * v;
+        hasScale = true;
+      } else if (v >= 20) {
+        // tens word ("twenty".."ninety"): start a new compound unless we're
+        // already building one that can accept a tens part.
+        if (cur > 0 && !(hasScale || (hasTens && !hasOnes))) flush();
+        cur += v;
+        hasTens = true;
       } else {
-        current += v;
+        // ones / teen (1-19): append only if current is open for more (has a
+        // tens or scaling part); otherwise it's a separate number → flush first.
+        if (cur > 0 && !(hasScale || (hasTens && !hasOnes))) flush();
+        cur += v;
+        hasOnes = true;
       }
     }
-    return String(total + current);
+    flush();
+    return out.join(' ');
   });
 }
 
@@ -137,7 +161,7 @@ function wordsToDigits(input: string): string {
 // A hyphen/dash here is chapter→verse, NOT a range — the preacher means 7:15.
 // A bare 3-digit run ("Romans 715") is split as chapter=first digits, verse=last two.
 const SPOKEN_CV_RE = new RegExp(
-  String.raw`\b(${BOOK_GROUP})\.?\s+(?:chapter\s+)?(\d{1,3})(?:\s*[-–—]?\s*(?:verse\s+)?(\d{1,3}))`,
+  String.raw`\b(${BOOK_GROUP})\.?\s+(?:chapter\s+)?(\d{1,3})(?:\s+(?:verse\s+)?(\d{1,3})|\s*[-–—]\s*(\d{1,3}))?`,
   'gi',
 );
 
@@ -163,6 +187,7 @@ interface RawMatch {
   verseStart?: number;
   verseEnd?: number;
   raw: string;
+  bareSplit?: boolean;
 }
 
 function parseSpokenCv(m: RegExpExecArray): RawMatch | null {
@@ -170,16 +195,21 @@ function parseSpokenCv(m: RegExpExecArray): RawMatch | null {
   if (!canonical) return null;
   let chapter = Number(m[2]);
   let verseStart: number | undefined;
-  if (m[3] !== undefined) {
-    verseStart = Number(m[3]);
+  const verseToken = m[3] !== undefined ? m[3] : m[4]; // space form or dash form
+  let bareSplit = false;
+  if (verseToken !== undefined) {
+    verseStart = Number(verseToken);
   } else if (chapter >= 100 && chapter <= 899) {
     // Bare run like "Romans 715" → chapter 7, verse 15. Cap chapter at 89 so we
-    // never misread a valid whole-chapter reference (e.g. Psalm 119) as 1:19.
+    // never misread a valid whole-chapter reference as 1:19.
     const verse = chapter % 100;
     chapter = Math.floor(chapter / 100);
-    if (verse > 0) verseStart = verse;
+    if (verse > 0) {
+      verseStart = verse;
+      bareSplit = true;
+    }
   }
-  return { book: canonical, chapter, verseStart, raw: m[0] };
+  return { book: canonical, chapter, verseStart, raw: m[0], bareSplit };
 }
 
 function parseRange(m: RegExpExecArray): RawMatch | null {
@@ -251,20 +281,28 @@ export function scanText(text: string): DetectedReference[] {
     ...collect(WRITTEN_RE, normalized, parseWritten),
   ];
 
-  // Drop whole-chapter matches that are just a prefix of a verse match for the
-  // same book+chapter (e.g. "Romans 7" inside "Romans 7:15").
+  // Resolve overlaps:
+  // 1. Drop a whole-chapter match when a verse match exists for the same
+  //    book+chapter (e.g. "Romans 7" is just the prefix of "Romans 7:15").
+  // 2. Drop a WRITTEN whole-chapter reading of a bare 3-digit run when the
+  //    SPOKEN pattern has already split it into chapter+verse (e.g. "Romans 715"
+  //    → 7:15; the WRITTEN "chapter 715" interpretation is impossible).
   const results: DetectedReference[] = [];
   for (const r of raws) {
-    const covers = raws.some(
-      (other) =>
-        other !== r &&
-        other.book === r.book &&
-        other.chapter === r.chapter &&
-        other.verseStart != null &&
-        r.verseStart == null &&
-        other.raw.startsWith(r.raw),
-    );
-    if (covers) continue;
+    const supplanted =
+      raws.some(
+        (other) =>
+          other !== r &&
+          other.book === r.book &&
+          other.chapter === r.chapter &&
+          other.verseStart != null &&
+          r.verseStart == null,
+      ) ||
+      (r.verseStart == null &&
+        raws.some(
+          (other) => other !== r && other.bareSplit === true && other.raw === r.raw,
+        ));
+    if (supplanted) continue;
     results.push({
       book: r.book,
       chapter: r.chapter,
