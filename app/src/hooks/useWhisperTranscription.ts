@@ -107,6 +107,9 @@ export function useWhisperTranscription(enabled: boolean = true): UseWhisperTran
 
   useEffect(() => {
     if (!enabled) {
+      bufferRef.current = new Float32Array(0);
+      speakingRef.current = false;
+      activeIdRef.current = null;
       setStatus('idle');
       return;
     }
@@ -116,7 +119,7 @@ export function useWhisperTranscription(enabled: boolean = true): UseWhisperTran
     }, PARTIAL_INTERVAL_MS);
 
     async function runPartialTranscription() {
-      if (cancelled || busyRef.current) return;
+      if (cancelled || !enabled || busyRef.current) return;
       if (!speakingRef.current || !activeIdRef.current) return;
       const transcriber = transcriberRef.current;
       if (!transcriber) return;
@@ -175,6 +178,7 @@ export function useWhisperTranscription(enabled: boolean = true): UseWhisperTran
     }
 
     function handleChunk(chunk: Float32Array) {
+      if (!enabled) return;
       const rms = computeRms(chunk);
       const isSpeech = rms > SILENCE_RMS_THRESHOLD;
       const now = performance.now();

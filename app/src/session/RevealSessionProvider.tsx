@@ -13,6 +13,7 @@ import {
   scanText,
   formatReference,
   type Confidence,
+  type DetectedReference,
 } from '../lib/referenceScanner';
 import { ensureBibleLoaded, buildVerseDetection, type VerseDetection, type VerseBatch } from '../lib/verseLookup';
 import { useProjectorState, type ProjectorState } from '../lib/revealStore';
@@ -29,6 +30,16 @@ export interface VerseDetectionQueueItem {
   batch: VerseBatch;
   isPrimary: boolean;
   confidence: Confidence;
+}
+
+/** A verse the operator has staged ahead of / during the service. Curated, not
+ *  auto-detected — it augments the live detection flow, never replaces it. */
+export interface QueuedVerse {
+  id: string;
+  ref: DetectedReference;
+  label?: string;
+  addedFrom: 'manual' | 'detection' | 'liturgy';
+  addedAt: number;
 }
 
 interface LiveState {
@@ -74,6 +85,11 @@ export interface RevealSessionValue {
   displayLatencyMs: number | null;
 
   pendingVerse: VerseDetectionQueueItem | null;
+
+  serviceQueue: QueuedVerse[];
+  stageVerse: (ref: DetectedReference, opts?: { label?: string; addedFrom?: QueuedVerse['addedFrom'] }) => void;
+  dismissQueuedVerse: (id: string) => void;
+  displayQueuedVerse: (item: QueuedVerse) => void;
 }
 
 const RevealSessionContext = createContext<RevealSessionValue | null>(null);
@@ -96,6 +112,7 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
   const [sessionSeconds, setSessionSeconds] = useState(0);
   const [manualQuery, setManualQuery] = useState('');
   const [displayLatencyMs, setDisplayLatencyMs] = useState<number | null>(null);
+  const [serviceQueue, setServiceQueue] = useState<QueuedVerse[]>([]);
   const displayStartRef = useRef<number | null>(null);
 
   // Resources only run while a session is active, so navigating away (or to
@@ -103,7 +120,7 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
   // down the mic, the model, and the elapsed timer.
   const { level: micLevel } = useAudioLevel(live.mic && active);
   const { segments, status: whisperStatus, backend: whisperBackend, error: whisperError, modelLoadMs } =
-    useWhisperTranscription(active);
+    useWhisperTranscription(active && live.mic);
 
   const stabilizerRef = useRef(new ReferenceStabilizer());
   const scannedFinalIdsRef = useRef(new Set<string>());
@@ -238,6 +255,48 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     setDetectionQueue((prev) => prev.filter((i) => i.id !== id));
   };
 
+  // --- Service Queue (operator-curated, planned verses) ---------------------
+  // Staging a verse does NOT touch the live detection queue. It reuses the
+  // existing projector path via buildVerseDetection + projectBatch, so latency
+  // is still measured and the verse still renders through the shared artboard.
+  const stageVerse: RevealSessionValue['stageVerse'] = (ref, opts) => {
+    setServiceQueue((prev) => {
+      const dup = prev.some((q) => q.ref.book === ref.book && q.ref.chapter === ref.chapter && q.ref.verseStart === ref.verseStart && q.ref.verseEnd === ref.verseEnd);
+      if (dup) return prev;
+      return [
+        ...prev,
+        {
+          id: `q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          ref,
+          label: opts?.label,
+          addedFrom: opts?.addedFrom ?? 'manual',
+          addedAt: Date.now(),
+        },
+      ];
+    });
+  };
+
+  const dismissQueuedVerse = (id: string) => {
+    setServiceQueue((prev) => prev.filter((q) => q.id !== id));
+  };
+
+  // Pushes a staged verse to the projector through the SAME path as a detected
+  // card (projectBatch + latency timing), then removes it from the queue.
+  const displayQueuedVerse: RevealSessionValue['displayQueuedVerse'] = (item) => {
+    const detection = buildVerseDetection(item.ref);
+    if (!detection) {
+      setUnresolvedRef(formatReference(item.ref));
+      return;
+    }
+    setUnresolvedRef(null);
+    const primary = detection.batches[0];
+    displayStartRef.current = performance.now();
+    projectBatch(detection, primary);
+    setServiceQueue((prev) => prev.filter((q) => q.id !== item.id));
+    const qi = toQueueItems(detection, item.addedFrom === 'manual' ? 'manual' : 'high')[0];
+    setRecentDetections((prev) => [qi, ...prev].slice(0, 5));
+  };
+
   // Manual search: type a reference ("Romans 8:28-30") to force a detection
   // without waiting for the preacher to speak it. Tagged 100% — a deliberate
   // operator action, never a guess.
@@ -284,6 +343,7 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     stabilizerRef.current.reset();
     setProjectorState(null);
     setDisplayLatencyMs(null);
+    setServiceQueue([]);
     displayStartRef.current = null;
   };
 
@@ -314,6 +374,10 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     runManualSearch,
     displayLatencyMs,
     pendingVerse,
+    serviceQueue,
+    stageVerse,
+    dismissQueuedVerse,
+    displayQueuedVerse,
   };
 
   return <RevealSessionContext.Provider value={value}>{children}</RevealSessionContext.Provider>;
