@@ -13,6 +13,7 @@ import {
   MonitorPlayIcon,
   ArrowsOutIcon,
   MagnifyingGlassIcon,
+  MicrophoneSlashIcon,
 } from '@phosphor-icons/react';
 
 import { BorderBeam } from 'border-beam';
@@ -22,9 +23,11 @@ import ProjectorArtboard, { DEFAULT_PROJECTOR } from '../components/ProjectorArt
 import PrimaryButton from '../components/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import IconToggle from '../components/IconToggle';
+import ServiceQueue from '../components/ServiceQueue';
 import { useRevealSession } from '../session/RevealSessionProvider';
 import { openProjectorWindow } from '../lib/revealStore';
 import type { Confidence } from '../lib/referenceScanner';
+import { scanText } from '../lib/referenceScanner';
 
 const MIN_LEFT = 260;
 const MIN_CENTER = 360;
@@ -150,6 +153,11 @@ export default function OperatorDashboard() {
     pendingVerse,
     displayLatencyMs,
     endSession,
+    serviceQueue,
+    stageVerse,
+    dismissQueuedVerse,
+    displayQueuedVerse,
+    reorderQueuedVerse,
   } = session;
 
   const [showEndModal, setShowEndModal] = useState(false);
@@ -353,12 +361,27 @@ export default function OperatorDashboard() {
             <div style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexShrink: 0 }}>
               <CardLabel>Live transcription stream</CardLabel>
               <div style={{ alignItems: 'center', display: 'flex', gap: '6px' }}>
-                <WaveformIcon size={13} weight="regular" color={whisperStatusColor} className="wave-pulse" />
-                <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', fontWeight: 500 }}>{whisperStatusLabel}</span>
+                {!live.mic ? (
+                  <>
+                    <MicrophoneSlashIcon size={13} weight="fill" color="#EAB308" />
+                    <span style={{ color: '#EAB308', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', fontWeight: 500 }}>Muted</span>
+                  </>
+                ) : (
+                  <>
+                    <WaveformIcon size={13} weight="regular" color={whisperStatusColor} className="wave-pulse" />
+                    <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', fontWeight: 500 }}>{whisperStatusLabel}</span>
+                  </>
+                )}
               </div>
             </div>
             <div ref={transcriptScrollRef} className={`scroll-region transcript-fade${transcriptOverflowing ? ' is-overflowing' : ''}`} style={{ display: 'flex', flex: '1 1 0%', flexDirection: 'column', gap: '8px', justifyContent: 'flex-end', minHeight: 0, overflowY: 'auto', padding: '4px' }}>
-              {whisperStatus === 'error' ? (
+              {!live.mic ? (
+                <div style={{ backgroundColor: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '10px', padding: '12px' }}>
+                  <span style={{ color: '#EAB308', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px', fontWeight: 500 }}>
+                    Microphone is muted. Click the microphone button in the footer to unmute.
+                  </span>
+                </div>
+              ) : whisperStatus === 'error' ? (
                 <div style={{ backgroundColor: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '10px', padding: '12px' }}>
                   <span style={{ color: '#EF4444', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px', lineHeight: 1.4 }}>{whisperError}</span>
                 </div>
@@ -428,17 +451,52 @@ export default function OperatorDashboard() {
               <SecondaryButton onClick={runManualSearch} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '16px' }}>
                 Search
               </SecondaryButton>
+              <SecondaryButton
+                onClick={() => {
+                  const refs = scanText(manualQuery);
+                  for (const ref of refs) stageVerse(ref, { addedFrom: 'manual' });
+                }}
+                style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '14px' }}
+              >
+                Add to queue
+              </SecondaryButton>
             </div>
 
             {detectionQueue.length === 0 ? (
-              <div style={{ alignItems: 'center', backgroundColor: '#0A273D', borderRadius: '12px', display: 'flex', gap: '8px', justifyContent: 'center', paddingBlock: '12px' }}>
-                <WaveformIcon size={14} weight="regular" color={unresolvedRef ? '#EAB308' : '#5B6B78'} />
-                <span style={{ color: unresolvedRef ? '#EAB308' : '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px' }}>
-                  {unresolvedRef ? `Heard "${unresolvedRef}" — no such passage` : 'Listening for the next reference…'}
-                </span>
+              <div style={{ alignItems: 'center', backgroundColor: !live.mic ? 'rgba(234,179,8,0.08)' : '#0A273D', border: !live.mic ? '1px solid rgba(234,179,8,0.25)' : 'none', borderRadius: '12px', display: 'flex', gap: '8px', justifyContent: 'center', paddingBlock: '12px' }}>
+                {!live.mic ? (
+                  <>
+                    <MicrophoneSlashIcon size={14} weight="fill" color="#EAB308" />
+                    <span style={{ color: '#EAB308', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px', fontWeight: 500 }}>
+                      Microphone is muted — live detection paused
+                    </span>
+                  </>
+                ) : unresolvedRef ? (
+                  <>
+                    <WaveformIcon size={14} weight="regular" color="#EAB308" />
+                    <span style={{ color: '#EAB308', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px' }}>
+                      Heard "{unresolvedRef}" — no such passage
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <WaveformIcon size={14} weight="regular" color="#5B6B78" />
+                    <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px' }}>
+                      Listening for the next reference…
+                    </span>
+                  </>
+                )}
               </div>
             ) : (
               <div ref={queueScrollRef} className={`scroll-region detection-fade${queueOverflowing ? ' is-overflowing' : ''}`} style={{ display: 'flex', flex: '1 1 0%', flexDirection: 'column', gap: '8px', minHeight: 0, overflow: queueOverflowing ? 'auto' : 'visible', paddingRight: '4px' }}>
+                {!live.mic && (
+                  <div style={{ alignItems: 'center', backgroundColor: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '8px', display: 'flex', gap: '8px', justifyContent: 'center', paddingBlock: '8px', paddingInline: '12px', flexShrink: 0 }}>
+                    <MicrophoneSlashIcon size={13} weight="fill" color="#EAB308" />
+                    <span style={{ color: '#EAB308', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', fontWeight: 500 }}>
+                      Microphone is muted — live detection paused
+                    </span>
+                  </div>
+                )}
                 {orderedDetections.map((item) => {
                   const isNewest = item.detection === newestDetection;
                   const isPrimary = item.isPrimary && isNewest;
@@ -493,6 +551,12 @@ export default function OperatorDashboard() {
                           <SecondaryButton onClick={() => dismissItem(item.id)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '14px' }}>
                             Dismiss
                           </SecondaryButton>
+                          <SecondaryButton
+                            onClick={() => stageVerse({ book: item.detection.book, chapter: item.detection.chapter, verseStart: item.detection.verseStart ?? undefined, verseEnd: item.detection.verseEnd ?? undefined }, { addedFrom: 'detection' })}
+                            style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '14px' }}
+                          >
+                            Stage
+                          </SecondaryButton>
                         </div>
                       </div>
                     </BorderBeam>
@@ -530,6 +594,12 @@ export default function OperatorDashboard() {
                         </PrimaryButton>
                         <SecondaryButton onClick={() => dismissItem(item.id)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '14px' }}>
                           Dismiss
+                        </SecondaryButton>
+                        <SecondaryButton
+                          onClick={() => stageVerse({ book: item.detection.book, chapter: item.detection.chapter, verseStart: item.detection.verseStart ?? undefined, verseEnd: item.detection.verseEnd ?? undefined }, { addedFrom: 'detection' })}
+                          style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '14px' }}
+                        >
+                          Stage
                         </SecondaryButton>
                       </div>
                     </div>
@@ -593,6 +663,13 @@ export default function OperatorDashboard() {
               </div>
             </button>
           </Card>
+
+          <ServiceQueue
+            queue={serviceQueue}
+            onDisplay={displayQueuedVerse}
+            onDismiss={dismissQueuedVerse}
+            onReorder={reorderQueuedVerse}
+          />
 
           <Card style={{ flex: '1 1 0%', gap: '10px', justifyContent: 'flex-start', paddingBlock: '12px', paddingInline: '14px' }}>
             <CardLabel>Recently detected</CardLabel>

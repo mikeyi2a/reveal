@@ -87,9 +87,10 @@ export interface RevealSessionValue {
   pendingVerse: VerseDetectionQueueItem | null;
 
   serviceQueue: QueuedVerse[];
-  stageVerse: (ref: DetectedReference, opts?: { label?: string; addedFrom?: QueuedVerse['addedFrom'] }) => void;
+  stageVerse: (ref: Omit<DetectedReference, 'confidence' | 'raw'>, opts?: { label?: string; addedFrom?: QueuedVerse['addedFrom'] }) => void;
   dismissQueuedVerse: (id: string) => void;
   displayQueuedVerse: (item: QueuedVerse) => void;
+  reorderQueuedVerse: (fromId: string, toId: string) => void;
 }
 
 const RevealSessionContext = createContext<RevealSessionValue | null>(null);
@@ -260,14 +261,15 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
   // existing projector path via buildVerseDetection + projectBatch, so latency
   // is still measured and the verse still renders through the shared artboard.
   const stageVerse: RevealSessionValue['stageVerse'] = (ref, opts) => {
+    const full: DetectedReference = { ...ref, confidence: 'manual', raw: '' };
     setServiceQueue((prev) => {
-      const dup = prev.some((q) => q.ref.book === ref.book && q.ref.chapter === ref.chapter && q.ref.verseStart === ref.verseStart && q.ref.verseEnd === ref.verseEnd);
+      const dup = prev.some((q) => q.ref.book === full.book && q.ref.chapter === full.chapter && q.ref.verseStart === full.verseStart && q.ref.verseEnd === full.verseEnd);
       if (dup) return prev;
       return [
         ...prev,
         {
           id: `q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-          ref,
+          ref: full,
           label: opts?.label,
           addedFrom: opts?.addedFrom ?? 'manual',
           addedAt: Date.now(),
@@ -295,6 +297,19 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     setServiceQueue((prev) => prev.filter((q) => q.id !== item.id));
     const qi = toQueueItems(detection, item.addedFrom === 'manual' ? 'manual' : 'high')[0];
     setRecentDetections((prev) => [qi, ...prev].slice(0, 5));
+  };
+
+  // Reorders the staged queue when the operator drags an item onto another.
+  const reorderQueuedVerse = (fromId: string, toId: string) => {
+    setServiceQueue((prev) => {
+      const fromIdx = prev.findIndex((q) => q.id === fromId);
+      const toIdx = prev.findIndex((q) => q.id === toId);
+      if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(fromIdx, 1);
+      next.splice(toIdx, 0, moved);
+      return next;
+    });
   };
 
   // Manual search: type a reference ("Romans 8:28-30") to force a detection
@@ -378,6 +393,7 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     stageVerse,
     dismissQueuedVerse,
     displayQueuedVerse,
+    reorderQueuedVerse,
   };
 
   return <RevealSessionContext.Provider value={value}>{children}</RevealSessionContext.Provider>;
