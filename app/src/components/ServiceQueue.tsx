@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { CaretDownIcon, LightningIcon, XIcon, ListPlusIcon } from '@phosphor-icons/react';
-import { Card, CardLabel } from './ConsoleLayout';
+import { LightningIcon, XIcon, ListPlusIcon, ClockCounterClockwiseIcon, ArrowCounterClockwiseIcon } from '@phosphor-icons/react';
+import { Card } from './ConsoleLayout';
 import SecondaryButton from './SecondaryButton';
-import type { QueuedVerse } from '../session/RevealSessionProvider';
+import type { QueuedVerse, VerseDetectionQueueItem } from '../session/RevealSessionProvider';
+import type { Confidence } from '../lib/referenceScanner';
 
 interface ServiceQueueProps {
   queue: QueuedVerse[];
+  recentDetections?: VerseDetectionQueueItem[];
   onDisplay: (item: QueuedVerse) => void;
   onDismiss: (id: string) => void;
   onReorder: (fromId: string, toId: string) => void;
+  onDisplayRecent?: (item: VerseDetectionQueueItem) => void;
 }
 
 function refLabel(ref: QueuedVerse['ref']): string {
@@ -19,50 +22,111 @@ function refLabel(ref: QueuedVerse['ref']): string {
   return `${ref.book} ${ref.chapter}${v}`;
 }
 
+function confidencePercent(c: Confidence): number {
+  return c === 'high' ? 98.4 : c === 'medium' ? 84.0 : 72.0;
+}
+
 /**
- * Operator-curated list of planned verses. SUBORDINATE to the live detection
- * flow — it augments, never replaces. Reorder is HTML5 drag-and-drop onto
- * another row (calls onReorder → session reorders the canonical queue). No
- * layout shift of the column beside it.
+ * Tabbed card container giving 100% full vertical height to both the curated
+ * Service Queue and Recently Detected history. Switches seamlessly between tabs
+ * with zero layout shift or clipping.
  */
-export default function ServiceQueue({ queue, onDisplay, onDismiss, onReorder }: ServiceQueueProps) {
-  const [collapsed, setCollapsed] = useState(false);
+export default function ServiceQueue({
+  queue,
+  recentDetections = [],
+  onDisplay,
+  onDismiss,
+  onReorder,
+  onDisplayRecent,
+}: ServiceQueueProps) {
+  const [activeTab, setActiveTab] = useState<'queue' | 'recent'>('queue');
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   return (
-    <Card style={{ flexShrink: 0, gap: '10px', padding: '12px 14px' }}>
-      <div
-        onClick={() => setCollapsed((c) => !c)}
-        style={{ alignItems: 'center', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', flexShrink: 0 }}
-      >
-        <div style={{ alignItems: 'center', display: 'flex', gap: '6px' }}>
-          <ListPlusIcon size={14} weight="bold" color="#19A7CE" />
-          <CardLabel>Service queue</CardLabel>
+    <Card style={{ flex: '1 1 0%', gap: '12px', padding: '12px 14px', minHeight: 0, overflow: 'visible' }}>
+      {/* Segmented Tab Bar */}
+      <div style={{ alignItems: 'center', backgroundColor: '#000B14', borderRadius: '8px', display: 'flex', gap: '4px', padding: '3px', flexShrink: 0 }}>
+        <button
+          type="button"
+          onClick={() => setActiveTab('queue')}
+          style={{
+            alignItems: 'center',
+            backgroundColor: activeTab === 'queue' ? '#0A273D' : 'transparent',
+            border: activeTab === 'queue' ? '1px solid rgba(25,167,206,0.3)' : '1px solid transparent',
+            borderRadius: '6px',
+            color: activeTab === 'queue' ? '#FCF7F0' : '#8D9AA6',
+            cursor: 'pointer',
+            display: 'flex',
+            flex: 1,
+            fontFamily: '"Geist", system-ui, sans-serif',
+            fontSize: '11px',
+            fontWeight: 600,
+            gap: '6px',
+            justifyContent: 'center',
+            paddingBlock: '6px',
+            transition: 'all 0.15s ease',
+          }}
+        >
+          <ListPlusIcon size={14} weight={activeTab === 'queue' ? 'bold' : 'regular'} color={activeTab === 'queue' ? '#19A7CE' : '#8D9AA6'} />
+          Service queue
           <span
             style={{
-              backgroundColor: '#0A273D',
+              backgroundColor: activeTab === 'queue' ? 'rgba(25,167,206,0.2)' : 'rgba(255,255,255,0.06)',
               borderRadius: '9999px',
-              color: '#8D9AA6',
-              fontFamily: '"Geist", system-ui, sans-serif',
+              color: activeTab === 'queue' ? '#19A7CE' : '#8D9AA6',
               fontSize: '10px',
-              fontWeight: 500,
+              fontWeight: 600,
               paddingBlock: '1px',
-              paddingInline: '7px',
+              paddingInline: '6px',
             }}
           >
             {queue.length}
           </span>
-        </div>
-        <CaretDownIcon
-          size={14}
-          color="#8D9AA6"
-          style={{ transform: collapsed ? 'rotate(-90deg)' : 'none', transition: 'transform 0.18s cubic-bezier(0.77, 0, 0.175, 1)' }}
-        />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('recent')}
+          style={{
+            alignItems: 'center',
+            backgroundColor: activeTab === 'recent' ? '#0A273D' : 'transparent',
+            border: activeTab === 'recent' ? '1px solid rgba(25,167,206,0.3)' : '1px solid transparent',
+            borderRadius: '6px',
+            color: activeTab === 'recent' ? '#FCF7F0' : '#8D9AA6',
+            cursor: 'pointer',
+            display: 'flex',
+            flex: 1,
+            fontFamily: '"Geist", system-ui, sans-serif',
+            fontSize: '11px',
+            fontWeight: 600,
+            gap: '6px',
+            justifyContent: 'center',
+            paddingBlock: '6px',
+            transition: 'all 0.15s ease',
+          }}
+        >
+          <ClockCounterClockwiseIcon size={14} weight={activeTab === 'recent' ? 'bold' : 'regular'} color={activeTab === 'recent' ? '#19A7CE' : '#8D9AA6'} />
+          Recent
+          <span
+            style={{
+              backgroundColor: activeTab === 'recent' ? 'rgba(25,167,206,0.2)' : 'rgba(255,255,255,0.06)',
+              borderRadius: '9999px',
+              color: activeTab === 'recent' ? '#19A7CE' : '#8D9AA6',
+              fontSize: '10px',
+              fontWeight: 600,
+              paddingBlock: '1px',
+              paddingInline: '6px',
+            }}
+          >
+            {recentDetections.length}
+          </span>
+        </button>
       </div>
 
-      {!collapsed && (
-        <div className="scroll-region" style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '220px', minHeight: 0, overflowY: 'auto', paddingRight: '2px' }}>
+      {/* Tab Content — 100% full vertical height with smooth scroll */}
+      {activeTab === 'queue' ? (
+        <div className="scroll-region" style={{ display: 'flex', flex: '1 1 0%', flexDirection: 'column', gap: '8px', minHeight: 0, overflowY: 'auto', paddingRight: '2px' }}>
           {queue.length === 0 ? (
             <div
               style={{
@@ -74,8 +138,8 @@ export default function ServiceQueue({ queue, onDisplay, onDismiss, onReorder }:
                 fontFamily: '"Geist", system-ui, sans-serif',
                 fontSize: '12px',
                 justifyContent: 'center',
-                paddingBlock: '14px',
-                paddingInline: '12px',
+                paddingBlock: '16px',
+                paddingInline: '14px',
                 textAlign: 'center',
               }}
             >
@@ -138,6 +202,64 @@ export default function ServiceQueue({ queue, onDisplay, onDismiss, onReorder }:
                     Dismiss
                   </SecondaryButton>
                 </div>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
+        <div className="scroll-region" style={{ display: 'flex', flex: '1 1 0%', flexDirection: 'column', gap: '8px', minHeight: 0, overflowY: 'auto', paddingRight: '2px' }}>
+          {recentDetections.length === 0 ? (
+            <div
+              style={{
+                alignItems: 'center',
+                backgroundColor: '#0A273D',
+                borderRadius: '12px',
+                color: '#5B6B78',
+                display: 'flex',
+                fontFamily: '"Geist", system-ui, sans-serif',
+                fontSize: '12px',
+                justifyContent: 'center',
+                paddingBlock: '16px',
+                paddingInline: '14px',
+                textAlign: 'center',
+              }}
+            >
+              No verses confirmed yet
+            </div>
+          ) : (
+            recentDetections.map((v) => (
+              <div
+                key={v.id}
+                style={{
+                  alignItems: 'center',
+                  backgroundColor: '#08202F',
+                  border: '1px solid rgba(255,255,255,0.05)',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  gap: '10px',
+                  justifyContent: 'space-between',
+                  minWidth: 0,
+                  paddingBlock: '10px',
+                  paddingInline: '14px',
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 }}>
+                  <div style={{ alignItems: 'center', display: 'flex', gap: '6px' }}>
+                    <span style={{ color: '#FCF7F0', fontFamily: '"Figtree", system-ui, sans-serif', fontSize: '13px', fontWeight: 600, letterSpacing: '-0.03em' }}>
+                      {v.batch.ref}
+                    </span>
+                    <span style={{ color: '#5B6B78', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '10px' }}>
+                      {confidencePercent(v.confidence).toFixed(1)}%
+                    </span>
+                  </div>
+                  <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {v.batch.text}
+                  </span>
+                </div>
+                <SecondaryButton onClick={() => onDisplayRecent?.(v)} style={{ fontSize: '11px', paddingBlock: '6px', paddingInline: '10px', flexShrink: 0 }}>
+                  <ArrowCounterClockwiseIcon size={12} weight="regular" />
+                  Re-project
+                </SecondaryButton>
               </div>
             ))
           )}

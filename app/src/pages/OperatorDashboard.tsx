@@ -4,7 +4,6 @@ import {
   MicrophoneIcon,
   VideoCameraIcon,
   SpeakerHighIcon,
-  ArrowCounterClockwiseIcon,
   SignOutIcon,
   LightningIcon,
   BookOpenTextIcon,
@@ -666,34 +665,12 @@ export default function OperatorDashboard() {
 
           <ServiceQueue
             queue={serviceQueue}
+            recentDetections={recentDetections}
             onDisplay={displayQueuedVerse}
             onDismiss={dismissQueuedVerse}
             onReorder={reorderQueuedVerse}
+            onDisplayRecent={displayItem}
           />
-
-          <Card style={{ flex: '1 1 0%', gap: '10px', justifyContent: 'flex-start', paddingBlock: '12px', paddingInline: '14px' }}>
-            <CardLabel>Recently detected</CardLabel>
-            {recentDetections.length === 0 && (
-              <span style={{ color: '#3A4753', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px' }}>No verses confirmed yet</span>
-            )}
-            {recentDetections.map((v) => (
-              <div key={v.id} style={{ alignItems: 'center', backgroundColor: '#0A273D', borderRadius: '10px', display: 'flex', gap: '10px', justifyContent: 'space-between', minWidth: 0, paddingBlock: '8px', paddingInline: '12px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 }}>
-                  <div style={{ alignItems: 'center', display: 'flex', gap: '6px' }}>
-                    <span style={{ color: '#FCF7F0', fontFamily: '"Figtree", system-ui, sans-serif', fontSize: '12px', fontWeight: 600, letterSpacing: '-0.03em' }}>{v.batch.ref}</span>
-                    <span style={{ color: '#5B6B78', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '10px' }}>{confidencePercent(v.confidence).toFixed(1)}%</span>
-                  </div>
-                  <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {v.batch.text}
-                  </span>
-                </div>
-                <SecondaryButton onClick={() => displayItem(v)} style={{ fontSize: '11px', paddingBlock: '6px', paddingInline: '10px' }}>
-                  <ArrowCounterClockwiseIcon size={12} weight="regular" />
-                  Re-project
-                </SecondaryButton>
-              </div>
-            ))}
-          </Card>
         </div>
       </main>
 
