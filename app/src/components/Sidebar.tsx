@@ -62,35 +62,36 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
             position: 'relative',
           }}
         >
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            title="Go to home"
-            className="nav-label"
-            style={{
-              background: 'none',
-              border: 'none',
-              color: '#19A7CE',
-              cursor: 'pointer',
-              fontFamily: '"Figtree", system-ui, sans-serif',
-              fontSize: '16px',
-              fontWeight: 600,
-              letterSpacing: '-0.03em',
-              opacity: collapsed ? 0 : 1,
-              padding: 0,
-              position: collapsed ? 'absolute' : 'static',
-              transform: collapsed ? 'translateX(-8px)' : 'translateX(0)',
-              transition: 'opacity 0.15s ease',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            REVEAL
-          </button>
+          {!collapsed && (
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              title="Go to home"
+              className="nav-label"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#19A7CE',
+                cursor: 'pointer',
+                fontFamily: '"Figtree", system-ui, sans-serif',
+                fontSize: '16px',
+                fontWeight: 600,
+                letterSpacing: '-0.03em',
+                padding: 0,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              REVEAL
+            </button>
+          )}
           <button
             type="button"
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            onClick={onToggle}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
             className="nav-item"
             style={{
               alignItems: 'center',
@@ -102,7 +103,9 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
               display: 'flex',
               height: '32px',
               justifyContent: 'center',
+              position: 'relative',
               width: '32px',
+              zIndex: 10,
             }}
           >
             <SidebarSimpleIcon size={19} weight="regular" />
