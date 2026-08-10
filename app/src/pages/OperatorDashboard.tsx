@@ -448,9 +448,9 @@ export default function OperatorDashboard() {
                       size="pulse-outside"
                       colorVariant="ocean"
                       theme="dark"
-                      strength={1.2}
-                      brightness={2.8}
-                      saturation={2.8}
+                      strength={0.7}
+                      brightness={1.8}
+                      saturation={2.0}
                       duration={2.2}
                       style={{ borderRadius: '12px' }}
                     >
