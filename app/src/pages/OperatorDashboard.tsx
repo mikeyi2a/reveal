@@ -565,32 +565,41 @@ export default function OperatorDashboard() {
                       style={{
                         alignItems: 'flex-start',
                         backgroundColor: '#08202F',
-                        border: '1px solid rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.06)',
                         borderRadius: '12px',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '10px',
-                        opacity: 0.78,
-                        paddingBlock: '10px',
+                        paddingBlock: '12px',
                         paddingInline: '14px',
                       }}
                     >
                       <div style={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        <span style={{ color: '#C9D4DC', fontFamily: '"Figtree", system-ui, sans-serif', fontSize: '14px', fontWeight: 600, letterSpacing: '-0.03em' }}>{item.batch.ref}</span>
+                        <span style={{ color: '#FCF7F0', fontFamily: '"Figtree", system-ui, sans-serif', fontSize: '14px', fontWeight: 600, letterSpacing: '-0.03em' }}>{item.batch.ref}</span>
                         <span style={{ backgroundColor: '#051929', borderRadius: '6px', color: '#19A7CE', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '10px', fontWeight: 500, letterSpacing: '0.04em', paddingBlock: '2px', paddingInline: '6px', textTransform: 'uppercase' }}>
                           WEB
                         </span>
                       </div>
 
-                      <span style={{ color: '#6E7C88', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px', lineHeight: 1.4 }}>
+                      <span style={{ color: '#8D9AA6', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px', lineHeight: 1.4 }}>
                         {previewText(item.batch.text)}
                       </span>
 
                       <div style={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        <PrimaryButton onClick={() => displayItem(item)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '16px' }}>
-                          <LightningIcon size={14} weight="fill" />
+                        <SecondaryButton
+                          onClick={() => displayItem(item)}
+                          style={{
+                            backgroundColor: 'rgba(25,167,206,0.16)',
+                            border: '1px solid #19A7CE',
+                            color: '#19A7CE',
+                            fontSize: '12px',
+                            paddingBlock: '6px',
+                            paddingInline: '16px',
+                          }}
+                        >
+                          <LightningIcon size={14} weight="fill" color="#19A7CE" />
                           Display
-                        </PrimaryButton>
+                        </SecondaryButton>
                         <SecondaryButton onClick={() => dismissItem(item.id)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '14px' }}>
                           Dismiss
                         </SecondaryButton>
