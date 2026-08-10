@@ -88,13 +88,128 @@ for (const book of BOOKS) {
 
 const allAliases = BOOKS.flatMap((b) => b.aliases).sort((a, b) => b.length - a.length);
 const BOOK_GROUP = allAliases.map(escapeRegExp).join('|');
-// Matches both written shorthand ("John 3:16", "Romans 8:28-30") and the way
-// references are actually spoken from a pulpit ("John chapter 3 verse 16",
-// "Romans chapter 8, verse 28 through 30").
-const REFERENCE_RE = new RegExp(
-  String.raw`\b(${BOOK_GROUP})\.?\s+(?:chapter\s+)?(\d{1,3})(?:\s*,?\s*(?:verses?\s+|:\s*)(\d{1,3})(?:\s*(?:[-–—]|through|to)\s*(\d{1,3}))?)?\b`,
+
+// --- Spoken-number support -------------------------------------------------
+// Preachers say "Romans seven fifteen", not "Romans 7:15". Whisper returns the
+// words, so we normalise number words to digits before pattern-matching. This
+// turns "Romans seven fifteen" into "Romans 7 15" so the same digit logic
+// downstream can resolve it.
+const NUM_WORDS: Record<string, number> = {
+  zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
+  nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15,
+  sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30,
+  forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90,
+  hundred: 100, thousand: 1000,
+};
+const NUM_WORD_RE = new RegExp(
+  `\\b(?:${Object.keys(NUM_WORDS).join('|')})(?:[\\s-]+(?:${Object.keys(NUM_WORDS).join('|')}))*\\b`,
   'gi',
 );
+
+/** Converts a run of spoken number words ("twenty three", "one hundred nineteen")
+ *  into its digit form. Leaves anything it can't parse untouched. */
+function wordsToDigits(input: string): string {
+  return input.replace(NUM_WORD_RE, (phrase) => {
+    const parts = phrase.toLowerCase().split(/[\s-]+/).filter(Boolean);
+    let total = 0;
+    let current = 0;
+    for (const p of parts) {
+      const v = NUM_WORDS[p];
+      if (v == null) return phrase; // bail — leave original words in place
+      if (v === 100 || v === 1000) {
+        current = (current || 1) * v;
+        total += current;
+        current = 0;
+      } else {
+        current += v;
+      }
+    }
+    return String(total + current);
+  });
+}
+
+// Three patterns, run in order. Each returns chapter/verse via capture groups;
+// we keep the most specific (verse-bearing) match and drop whole-chapter
+// matches that are just a prefix of a verse match (e.g. "Romans 7" inside
+// "Romans 7:15").
+
+// Spoken chapter+verse: "Romans 7 15", "Romans 7-15", "Romans chapter 7 verse 15".
+// A hyphen/dash here is chapter→verse, NOT a range — the preacher means 7:15.
+// A bare 3-digit run ("Romans 715") is split as chapter=first digits, verse=last two.
+const SPOKEN_CV_RE = new RegExp(
+  String.raw`\b(${BOOK_GROUP})\.?\s+(?:chapter\s+)?(\d{1,3})(?:\s*[-–—]?\s*(?:verse\s+)?(\d{1,3}))`,
+  'gi',
+);
+
+// Spoken range: "Romans 7 verse 1 through 8", "Romans 7 1 to 8". The range
+// connector must be a WORD (through/to/and) — never a dash, which stays
+// chapter→verse in SPOKEN_CV_RE above.
+const SPOKEN_RANGE_RE = new RegExp(
+  String.raw`\b(${BOOK_GROUP})\.?\s+(?:chapter\s+)?(\d{1,3})\s+(?:verse\s+)?(\d{1,3})\s+(?:through|thru|to|and)\s+(?:verse\s+)?(\d{1,3})`,
+  'gi',
+);
+
+// Written form: "John 3:16", "Romans 8:28-30". A dash is only a range when it
+// follows an explicit colon — "Romans 7-15" is NOT a range here (it falls to
+// SPOKEN_CV_RE as chapter→verse instead).
+const WRITTEN_RE = new RegExp(
+  String.raw`\b(${BOOK_GROUP})\.?\s+(\d{1,3})(?::(\d{1,3})(?:[-–—](\d{1,3}))?)?`,
+  'gi',
+);
+
+interface RawMatch {
+  book: string;
+  chapter: number;
+  verseStart?: number;
+  verseEnd?: number;
+  raw: string;
+}
+
+function parseSpokenCv(m: RegExpExecArray): RawMatch | null {
+  const canonical = aliasToCanonical.get(m[1].toLowerCase());
+  if (!canonical) return null;
+  let chapter = Number(m[2]);
+  let verseStart: number | undefined;
+  if (m[3] !== undefined) {
+    verseStart = Number(m[3]);
+  } else if (chapter >= 100 && chapter <= 899) {
+    // Bare run like "Romans 715" → chapter 7, verse 15. Cap chapter at 89 so we
+    // never misread a valid whole-chapter reference (e.g. Psalm 119) as 1:19.
+    const verse = chapter % 100;
+    chapter = Math.floor(chapter / 100);
+    if (verse > 0) verseStart = verse;
+  }
+  return { book: canonical, chapter, verseStart, raw: m[0] };
+}
+
+function parseRange(m: RegExpExecArray): RawMatch | null {
+  const canonical = aliasToCanonical.get(m[1].toLowerCase());
+  if (!canonical) return null;
+  const chapter = Number(m[2]);
+  const verseStart = Number(m[3]);
+  const verseEnd = Number(m[4]);
+  return { book: canonical, chapter, verseStart, verseEnd, raw: m[0] };
+}
+
+function parseWritten(m: RegExpExecArray): RawMatch | null {
+  const canonical = aliasToCanonical.get(m[1].toLowerCase());
+  if (!canonical) return null;
+  const chapter = Number(m[2]);
+  const verseStart = m[3] !== undefined ? Number(m[3]) : undefined;
+  const verseEnd = m[4] !== undefined ? Number(m[4]) : undefined;
+  return { book: canonical, chapter, verseStart, verseEnd, raw: m[0] };
+}
+
+function collect(re: RegExp, text: string, parser: (m: RegExpExecArray) => RawMatch | null): RawMatch[] {
+  const out: RawMatch[] = [];
+  re.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    const parsed = parser(m);
+    if (parsed) out.push(parsed);
+  }
+  return out;
+}
 
 export type Confidence = 'high' | 'medium' | 'manual';
 
@@ -122,27 +237,41 @@ export function referenceKey(ref: DetectedReference): string {
 }
 
 /**
- * Scans free text for Bible references. Requires a digit (chapter number)
- * immediately after the book name, so bare mentions of a name that is also
- * a book ("John", "James", "Mark") never match on their own.
+ * Scans free text for Bible references. Handles the way references are
+ * actually spoken from a pulpit — word numbers ("seven fifteen"), a missing
+ * colon ("Romans 7-15" = chapter 7 verse 15, not a range), and bare digit runs
+ * ("Romans 715"). Written shorthand ("John 3:16", "Romans 8:28-30") still works,
+ * where a dash genuinely is a range.
  */
 export function scanText(text: string): DetectedReference[] {
+  const normalized = wordsToDigits((text || '').toLowerCase());
+  const raws = [
+    ...collect(SPOKEN_RANGE_RE, normalized, parseRange),
+    ...collect(SPOKEN_CV_RE, normalized, parseSpokenCv),
+    ...collect(WRITTEN_RE, normalized, parseWritten),
+  ];
+
+  // Drop whole-chapter matches that are just a prefix of a verse match for the
+  // same book+chapter (e.g. "Romans 7" inside "Romans 7:15").
   const results: DetectedReference[] = [];
-  REFERENCE_RE.lastIndex = 0;
-  let match: RegExpExecArray | null;
-  while ((match = REFERENCE_RE.exec(text)) !== null) {
-    const canonical = aliasToCanonical.get(match[1].toLowerCase());
-    if (!canonical) continue;
-    const chapter = Number(match[2]);
-    const verseStart = match[3] !== undefined ? Number(match[3]) : undefined;
-    const verseEnd = match[4] !== undefined ? Number(match[4]) : undefined;
+  for (const r of raws) {
+    const covers = raws.some(
+      (other) =>
+        other !== r &&
+        other.book === r.book &&
+        other.chapter === r.chapter &&
+        other.verseStart != null &&
+        r.verseStart == null &&
+        other.raw.startsWith(r.raw),
+    );
+    if (covers) continue;
     results.push({
-      book: canonical,
-      chapter,
-      verseStart,
-      verseEnd,
-      confidence: verseStart !== undefined ? 'high' : 'medium',
-      raw: match[0],
+      book: r.book,
+      chapter: r.chapter,
+      verseStart: r.verseStart,
+      verseEnd: r.verseEnd,
+      confidence: r.verseStart !== undefined ? 'high' : 'medium',
+      raw: r.raw,
     });
   }
   return results;

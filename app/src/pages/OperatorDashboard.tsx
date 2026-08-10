@@ -425,7 +425,7 @@ export default function OperatorDashboard() {
                   style={{ background: 'none', border: 'none', color: '#FCF7F0', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '12px', outline: 'none', width: '100%' }}
                 />
               </div>
-              <SecondaryButton onClick={runManualSearch} style={{ fontSize: '12px', height: '36px', paddingBlock: 0, paddingInline: '16px' }}>
+              <SecondaryButton onClick={runManualSearch} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '16px' }}>
                 Search
               </SecondaryButton>
             </div>
@@ -486,11 +486,11 @@ export default function OperatorDashboard() {
                         </span>
 
                         <div style={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                          <PrimaryButton onClick={() => displayItem(item)} style={{ fontSize: '12px', paddingBlock: '9px', paddingInline: '16px' }}>
+                          <PrimaryButton onClick={() => displayItem(item)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '16px' }}>
                             <LightningIcon size={14} weight="fill" />
                             Confirm &amp; Display
                           </PrimaryButton>
-                          <SecondaryButton onClick={() => dismissItem(item.id)} style={{ fontSize: '12px', paddingBlock: '9px', paddingInline: '14px' }}>
+                          <SecondaryButton onClick={() => dismissItem(item.id)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '14px' }}>
                             Dismiss
                           </SecondaryButton>
                         </div>
@@ -524,11 +524,11 @@ export default function OperatorDashboard() {
                       </span>
 
                       <div style={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        <PrimaryButton onClick={() => displayItem(item)} style={{ fontSize: '12px', paddingBlock: '9px', paddingInline: '16px' }}>
+                        <PrimaryButton onClick={() => displayItem(item)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '16px' }}>
                           <LightningIcon size={14} weight="fill" />
                           Display
                         </PrimaryButton>
-                        <SecondaryButton onClick={() => dismissItem(item.id)} style={{ fontSize: '12px', paddingBlock: '9px', paddingInline: '14px' }}>
+                        <SecondaryButton onClick={() => dismissItem(item.id)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '14px' }}>
                           Dismiss
                         </SecondaryButton>
                       </div>
@@ -649,7 +649,8 @@ export default function OperatorDashboard() {
                 borderRadius: '9999px',
                 boxShadow: autoPush ? '0 0 0 1px rgba(25, 167, 206, 0.4)' : undefined,
                 color: '#FCF7F0',
-                paddingBlock: '9px',
+                height: '40px',
+                paddingBlock: 0,
                 paddingInline: '18px',
               }}
             >
@@ -660,7 +661,8 @@ export default function OperatorDashboard() {
             danger
             onClick={() => setShowEndModal(true)}
             style={{
-              paddingBlock: '9px',
+              height: '40px',
+              paddingBlock: 0,
               paddingInline: '18px',
             }}
           >
@@ -712,10 +714,10 @@ export default function OperatorDashboard() {
               </span>
             </div>
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-              <SecondaryButton onClick={() => setShowEndModal(false)} style={{ fontSize: '13px', paddingBlock: '10px', paddingInline: '18px' }}>
+              <SecondaryButton onClick={() => setShowEndModal(false)} style={{ fontSize: '13px', paddingBlock: '6px', paddingInline: '18px' }}>
                 Keep session
               </SecondaryButton>
-              <PrimaryButton onClick={confirmEnd} style={{ fontSize: '13px', paddingBlock: '10px', paddingInline: '18px' }}>
+              <PrimaryButton onClick={confirmEnd} style={{ fontSize: '13px', paddingBlock: '6px', paddingInline: '18px' }}>
                 <SignOutIcon size={15} weight="regular" />
                 End session
               </PrimaryButton>
