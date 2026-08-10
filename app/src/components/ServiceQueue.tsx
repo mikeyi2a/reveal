@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LightningIcon, XIcon, ListPlusIcon, ClockCounterClockwiseIcon, ArrowCounterClockwiseIcon } from '@phosphor-icons/react';
+import { LightningIcon, XIcon, ListPlusIcon, ClockCounterClockwiseIcon, ArrowCounterClockwiseIcon, DotsSixVerticalIcon } from '@phosphor-icons/react';
 import { Card } from './ConsoleLayout';
 import SecondaryButton from './SecondaryButton';
 import type { QueuedVerse, VerseDetectionQueueItem } from '../session/RevealSessionProvider';
@@ -44,16 +44,34 @@ export default function ServiceQueue({
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   return (
-    <Card style={{ flex: '1 1 0%', gap: '12px', padding: '12px 14px', minHeight: 0, overflow: 'visible' }}>
-      {/* Segmented Tab Bar */}
-      <div style={{ alignItems: 'center', backgroundColor: '#000B14', borderRadius: '8px', display: 'flex', gap: '4px', padding: '3px', flexShrink: 0 }}>
+    <Card style={{ flex: '1 1 0%', gap: '12px', padding: '10px 12px', minHeight: 0, overflow: 'visible' }}>
+      {/* Segmented Tab Bar — sliding thumb tracks the active tab so switching
+          reads as one continuous motion instead of two buttons blinking. */}
+      <div style={{ position: 'relative', alignItems: 'center', backgroundColor: '#000B14', borderRadius: '8px', display: 'flex', padding: '3px', flexShrink: 0 }}>
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            top: '3px',
+            bottom: '3px',
+            left: '3px',
+            width: 'calc(50% - 3px)',
+            backgroundColor: '#0A273D',
+            border: '1px solid rgba(25,167,206,0.3)',
+            borderRadius: '6px',
+            transform: `translateX(${activeTab === 'recent' ? '100%' : '0%'})`,
+            transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}
+        />
         <button
           type="button"
           onClick={() => setActiveTab('queue')}
           style={{
+            position: 'relative',
+            zIndex: 1,
             alignItems: 'center',
-            backgroundColor: activeTab === 'queue' ? '#0A273D' : 'transparent',
-            border: activeTab === 'queue' ? '1px solid rgba(25,167,206,0.3)' : '1px solid transparent',
+            backgroundColor: 'transparent',
+            border: '1px solid transparent',
             borderRadius: '6px',
             color: activeTab === 'queue' ? '#FCF7F0' : '#8D9AA6',
             cursor: 'pointer',
@@ -65,7 +83,7 @@ export default function ServiceQueue({
             gap: '6px',
             justifyContent: 'center',
             paddingBlock: '6px',
-            transition: 'all 0.15s ease',
+            transition: 'color 0.15s ease',
           }}
         >
           <ListPlusIcon size={14} weight={activeTab === 'queue' ? 'bold' : 'regular'} color={activeTab === 'queue' ? '#19A7CE' : '#8D9AA6'} />
@@ -79,6 +97,7 @@ export default function ServiceQueue({
               fontWeight: 600,
               paddingBlock: '1px',
               paddingInline: '6px',
+              transition: 'background-color 0.15s ease, color 0.15s ease',
             }}
           >
             {queue.length}
@@ -89,9 +108,11 @@ export default function ServiceQueue({
           type="button"
           onClick={() => setActiveTab('recent')}
           style={{
+            position: 'relative',
+            zIndex: 1,
             alignItems: 'center',
-            backgroundColor: activeTab === 'recent' ? '#0A273D' : 'transparent',
-            border: activeTab === 'recent' ? '1px solid rgba(25,167,206,0.3)' : '1px solid transparent',
+            backgroundColor: 'transparent',
+            border: '1px solid transparent',
             borderRadius: '6px',
             color: activeTab === 'recent' ? '#FCF7F0' : '#8D9AA6',
             cursor: 'pointer',
@@ -103,7 +124,7 @@ export default function ServiceQueue({
             gap: '6px',
             justifyContent: 'center',
             paddingBlock: '6px',
-            transition: 'all 0.15s ease',
+            transition: 'color 0.15s ease',
           }}
         >
           <ClockCounterClockwiseIcon size={14} weight={activeTab === 'recent' ? 'bold' : 'regular'} color={activeTab === 'recent' ? '#19A7CE' : '#8D9AA6'} />
@@ -117,6 +138,7 @@ export default function ServiceQueue({
               fontWeight: 600,
               paddingBlock: '1px',
               paddingInline: '6px',
+              transition: 'background-color 0.15s ease, color 0.15s ease',
             }}
           >
             {recentDetections.length}
@@ -169,38 +191,47 @@ export default function ServiceQueue({
                   setDragOverId(null);
                 }}
                 style={{
-                  alignItems: 'flex-start',
+                  alignItems: 'center',
                   backgroundColor: dragOverId === item.id ? 'rgba(25,167,206,0.08)' : '#08202F',
                   border: `1px solid ${dragOverId === item.id ? 'rgba(25,167,206,0.4)' : 'rgba(255,255,255,0.05)'}`,
                   borderRadius: '12px',
                   cursor: 'grab',
                   display: 'flex',
-                  flexDirection: 'column',
+                  flexDirection: 'row',
                   gap: '10px',
                   paddingBlock: '10px',
-                  paddingInline: '14px',
+                  paddingInline: '10px',
                   transition: 'background-color 0.15s ease, border-color 0.15s ease',
                 }}
               >
-                <div style={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  <span style={{ color: '#C9D4DC', fontFamily: '"Figtree", system-ui, sans-serif', fontSize: '14px', fontWeight: 600, letterSpacing: '-0.03em' }}>
-                    {refLabel(item.ref)}
-                  </span>
-                  {item.label && (
-                    <span style={{ backgroundColor: '#051929', borderRadius: '6px', color: '#19A7CE', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '10px', fontWeight: 500, letterSpacing: '0.04em', paddingBlock: '2px', paddingInline: '6px', textTransform: 'uppercase' }}>
-                      {item.label}
+                {/* Drag affordance — signals the row is reorderable. */}
+                <DotsSixVerticalIcon
+                  size={16}
+                  weight="regular"
+                  color={dragOverId === item.id ? '#19A7CE' : '#3A4753'}
+                  style={{ cursor: 'grab', flexShrink: 0 }}
+                />
+                <div style={{ alignItems: 'flex-start', display: 'flex', flex: '1 1 auto', flexDirection: 'column', gap: '10px', minWidth: 0 }}>
+                  <div style={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    <span style={{ color: '#C9D4DC', fontFamily: '"Figtree", system-ui, sans-serif', fontSize: '14px', fontWeight: 600, letterSpacing: '-0.03em' }}>
+                      {refLabel(item.ref)}
                     </span>
-                  )}
-                </div>
-                <div style={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  <SecondaryButton onClick={() => onDisplay(item)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '14px' }}>
-                    <LightningIcon size={14} weight="fill" />
-                    Display
-                  </SecondaryButton>
-                  <SecondaryButton onClick={() => onDismiss(item.id)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '12px' }}>
-                    <XIcon size={14} weight="bold" />
-                    Dismiss
-                  </SecondaryButton>
+                    {item.label && (
+                      <span style={{ backgroundColor: '#051929', borderRadius: '6px', color: '#19A7CE', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '10px', fontWeight: 500, letterSpacing: '0.04em', paddingBlock: '2px', paddingInline: '6px', textTransform: 'uppercase' }}>
+                        {item.label}
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    <SecondaryButton onClick={() => onDisplay(item)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '14px' }}>
+                      <LightningIcon size={14} weight="fill" />
+                      Display
+                    </SecondaryButton>
+                    <SecondaryButton onClick={() => onDismiss(item.id)} style={{ fontSize: '12px', paddingBlock: '6px', paddingInline: '12px' }}>
+                      <XIcon size={14} weight="bold" />
+                      Dismiss
+                    </SecondaryButton>
+                  </div>
                 </div>
               </div>
             ))

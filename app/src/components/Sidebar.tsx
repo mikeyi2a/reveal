@@ -62,22 +62,30 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
             position: 'relative',
           }}
         >
-          <span
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            title="Go to home"
             className="nav-label"
             style={{
+              background: 'none',
+              border: 'none',
               color: '#19A7CE',
+              cursor: 'pointer',
               fontFamily: '"Figtree", system-ui, sans-serif',
               fontSize: '16px',
               fontWeight: 600,
               letterSpacing: '-0.03em',
               opacity: collapsed ? 0 : 1,
+              padding: 0,
               position: collapsed ? 'absolute' : 'static',
               transform: collapsed ? 'translateX(-8px)' : 'translateX(0)',
+              transition: 'opacity 0.15s ease',
               whiteSpace: 'nowrap',
             }}
           >
             REVEAL
-          </span>
+          </button>
           <button
             type="button"
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}

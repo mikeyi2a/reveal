@@ -175,7 +175,7 @@ export default function AudioSetup() {
         >
           Back
         </button>
-        <PrimaryButton onClick={() => navigate('/theme-studio')}>
+        <PrimaryButton onClick={() => navigate('/theme-studio')} style={{ height: '40px', paddingBlock: 0 }}>
           Continue
           <ArrowRightIcon size={16} weight="bold" />
         </PrimaryButton>

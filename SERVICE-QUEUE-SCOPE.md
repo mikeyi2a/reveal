@@ -1,6 +1,11 @@
 # Service Queue — Scope (proposal)
 
-Status: **proposed — not built.** Part 1 of 3.
+Status: **built.** `serviceQueue` state + `stageVerse` / `dismissQueuedVerse` /
+`displayQueuedVerse` / `reorderQueuedVerse` live in `RevealSessionProvider.tsx`,
+rendered by `ServiceQueue.tsx`, with drag-reorder wired via native `draggable`.
+The scope constraints below (no cross-device sync, no liturgy import, no
+auto-advance, not persisted across End Session) remain binding — this doc now
+describes the shipped feature's boundaries, not a future one. Part 1 of 3.
 
 ## Why it exists
 Live preaching flow today: preacher speaks → Whisper detects → verse card →

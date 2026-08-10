@@ -356,7 +356,7 @@ export default function OperatorDashboard() {
         {/* LEFT COLUMN — shrunk: the live transcript is honest context, not the
             focus. The verse detection & matching column is the primary surface. */}
         <div style={{ display: 'flex', flex: '0 0 auto', width: `${leftWidth}px`, minWidth: 0, minHeight: 0, overflow: 'visible' }}>
-          <Card style={{ width: '100%', gap: '10px', paddingBlock: '12px', paddingInline: '14px', minHeight: 0, overflow: 'visible' }}>
+          <Card style={{ width: '100%', gap: '10px', paddingBlock: '10px', paddingInline: '12px', minHeight: 0, overflow: 'visible' }}>
             <div style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexShrink: 0 }}>
               <CardLabel>Live transcription stream</CardLabel>
               <div style={{ alignItems: 'center', display: 'flex', gap: '6px' }}>
@@ -424,7 +424,7 @@ export default function OperatorDashboard() {
             width. Idle cards are dimmed; only the pending (unconfirmed) card
             pops with the cyan accent + BorderBeam. */}
         <div style={{ display: 'flex', flex: '1 1 0%', minWidth: MIN_CENTER, flexDirection: 'column', gap: '10px', minHeight: 0, overflow: 'visible' }}>
-          <Card style={{ flex: '1 1 0%', gap: '12px', paddingBlock: '12px', paddingInline: '14px', minHeight: 0, overflow: 'visible' }}>
+          <Card style={{ flex: '1 1 0%', gap: '12px', paddingBlock: '10px', paddingInline: '12px', minHeight: 0, overflow: 'visible' }}>
             <div style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexShrink: 0 }}>
               <CardLabel>Verse detection &amp; matching</CardLabel>
               {pendingVerse && (
@@ -617,7 +617,7 @@ export default function OperatorDashboard() {
             style={{
               flexShrink: 0,
               gap: '12px',
-              padding: '12px 14px',
+              padding: '10px 12px',
             }}
           >
             <div style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexShrink: 0 }}>
