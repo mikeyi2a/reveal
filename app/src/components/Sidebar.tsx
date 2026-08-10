@@ -33,6 +33,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
   return (
     <aside
+      className="sidebar-rail"
       style={{
         backgroundColor: '#03111C',
         display: 'flex',
@@ -43,7 +44,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         paddingBlock: '18px',
         position: 'fixed',
         top: 0,
-        transition: 'width 0.18s ease',
+        transition: 'width 0.22s cubic-bezier(0.77, 0, 0.175, 1)',
         width: collapsed ? `${SIDEBAR_WIDTH_COLLAPSED}px` : `${SIDEBAR_WIDTH_EXPANDED}px`,
         zIndex: 20,
       }}
@@ -56,14 +57,27 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
             alignItems: 'center',
             display: 'flex',
             justifyContent: collapsed ? 'center' : 'space-between',
+            overflow: 'hidden',
             paddingInline: collapsed ? 0 : '16px',
+            position: 'relative',
           }}
         >
-          {!collapsed && (
-            <span style={{ color: '#19A7CE', fontFamily: '"Figtree", system-ui, sans-serif', fontSize: '16px', fontWeight: 600, letterSpacing: '-0.03em' }}>
-              REVEAL
-            </span>
-          )}
+          <span
+            className="nav-label"
+            style={{
+              color: '#19A7CE',
+              fontFamily: '"Figtree", system-ui, sans-serif',
+              fontSize: '16px',
+              fontWeight: 600,
+              letterSpacing: '-0.03em',
+              opacity: collapsed ? 0 : 1,
+              position: collapsed ? 'absolute' : 'static',
+              transform: collapsed ? 'translateX(-8px)' : 'translateX(0)',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            REVEAL
+          </span>
           <button
             type="button"
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
@@ -120,6 +134,8 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                   cursor: isDisabled ? 'default' : 'pointer',
                   display: 'flex',
                   gap: '12px',
+                  overflow: 'hidden',
+                  position: 'relative',
                   height: '40px',
                   justifyContent: collapsed ? 'center' : 'flex-start',
                   opacity: isDisabled ? 0.45 : 1,
@@ -128,22 +144,42 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 }}
               >
                 <Icon size={20} weight={isActive ? 'fill' : 'regular'} style={{ flexShrink: 0 }} />
-                {!collapsed && (
-                  <span style={{ fontFamily: '"Geist", system-ui, sans-serif', fontSize: '13px', fontWeight: isActive ? 600 : 400, whiteSpace: 'nowrap' }}>
-                    {item.label}
-                  </span>
-                )}
+                <span
+                  className="nav-label"
+                  style={{
+                    fontFamily: '"Geist", system-ui, sans-serif',
+                    fontSize: '13px',
+                    fontWeight: isActive ? 600 : 400,
+                    opacity: collapsed ? 0 : 1,
+                    position: collapsed ? 'absolute' : 'static',
+                    transform: collapsed ? 'translateX(-8px)' : 'translateX(0)',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {item.label}
+                </span>
               </button>
             );
           })}
         </nav>
       </div>
 
-      <div style={{ alignItems: 'center', display: 'flex', gap: '8px', justifyContent: collapsed ? 'center' : 'flex-start', paddingInline: collapsed ? 0 : '16px' }}>
+      <div style={{ alignItems: 'center', display: 'flex', gap: '8px', justifyContent: collapsed ? 'center' : 'flex-start', overflow: 'hidden', paddingInline: collapsed ? 0 : '16px', position: 'relative' }}>
         <div title="Offline-ready" style={{ backgroundColor: '#12D453', borderRadius: '9999px', flexShrink: 0, height: '7px', width: '7px' }} />
-        {!collapsed && (
-          <span style={{ color: '#5B6B78', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '11px', whiteSpace: 'nowrap' }}>Offline-ready</span>
-        )}
+        <span
+          className="nav-label"
+          style={{
+            color: '#5B6B78',
+            fontFamily: '"Geist", system-ui, sans-serif',
+            fontSize: '11px',
+            opacity: collapsed ? 0 : 1,
+            position: collapsed ? 'absolute' : 'static',
+            transform: collapsed ? 'translateX(-8px)' : 'translateX(0)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          Offline-ready
+        </span>
       </div>
     </aside>
   );

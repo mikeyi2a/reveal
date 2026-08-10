@@ -1,0 +1,36 @@
+{
+  "selected_ids": [
+    "7d697cd9-6238-4426-ba2b-285b63c7fdd6",
+    "926d3a62-6a96-40d0-9c46-4965679df3c7",
+    "310955c5-6f5c-44eb-bb3c-ca0362b77008",
+    "3b3c2b66-b096-4752-aa90-29d318ec9568",
+    "920d0adb-7d8b-4531-9659-faa024c815f8",
+    "12951a6d-5b8b-441e-98fe-b0cb2a902198",
+    "0d05a504-60e0-42f4-9382-bec0b893208a",
+    "388fc4ca-dc36-47eb-affa-83379311fcbc",
+    "90fefda0-8306-46f4-875c-6a8a37fed96f",
+    "d6ecc2ee-e00b-4a71-80de-d1fe47fff0a6",
+    "e3577e3e-4b7f-4bf1-8058-627bcce0b790",
+    "fbde692b-9ae3-46fa-baa1-ba2ead776aa6",
+    "e2c98980-269f-432e-a8bc-55c981de2359",
+    "96f4183b-7eb5-437c-90ad-95d1306d320c",
+    "ce51e0dc-9e64-472b-8668-cb71ddb1f47f"
+  ],
+  "site_map": {
+    "7d697cd9-6238-4426-ba2b-285b63c7fdd6": "Lassie",
+    "926d3a62-6a96-40d0-9c46-4965679df3c7": "Lassie",
+    "310955c5-6f5c-44eb-bb3c-ca0362b77008": "Lassie",
+    "3b3c2b66-b096-4752-aa90-29d318ec9568": "Fixa (Fixer)",
+    "920d0adb-7d8b-4531-9659-faa024c815f8": "Fixa (Fixer)",
+    "12951a6d-5b8b-441e-98fe-b0cb2a902198": "Lassie",
+    "0d05a504-60e0-42f4-9382-bec0b893208a": "Poly",
+    "388fc4ca-dc36-47eb-affa-83379311fcbc": "Poly",
+    "90fefda0-8306-46f4-875c-6a8a37fed96f": "ToDesktop",
+    "d6ecc2ee-e00b-4a71-80de-d1fe47fff0a6": "Runner",
+    "e3577e3e-4b7f-4bf1-8058-627bcce0b790": "Robot.com",
+    "fbde692b-9ae3-46fa-baa1-ba2ead776aa6": "Monologue",
+    "e2c98980-269f-432e-a8bc-55c981de2359": "Norma",
+    "96f4183b-7eb5-437c-90ad-95d1306d320c": "Norma",
+    "ce51e0dc-9e64-472b-8668-cb71ddb1f47f": "Monologue"
+  }
+}

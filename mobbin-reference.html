@@ -1,254 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mobbin Reference v2 — Reveal Landing Page</title>
-  <style>
-    :root { --bg: #000B14; --card: #051929; --accent: #19A7CE; --text: #f0f0f0; --muted: #8892b0; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif; padding: 40px; }
-    h1 { font-size: 28px; margin-bottom: 8px; }
-    .subtitle { color: var(--muted); margin-bottom: 32px; font-size: 14px; }
-    .category { margin-bottom: 48px; }
-    .category h2 { font-size: 18px; margin-bottom: 16px; border-bottom: 1px solid var(--accent); padding-bottom: 6px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-    .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #1a2a3a; transition: border-color 0.2s; }
-    .card:hover { border-color: var(--accent); }
-    .card a { text-decoration: none; color: inherit; display: block; }
-    .card img { width: 100%; height: auto; display: block; }
-    .label { padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--accent); text-align: center; }
-    footer { margin-top: 60px; text-align: center; color: var(--muted); font-size: 12px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobbin Curated — Reveal Marketing</title>
+<style>
+  :root { --bg: #000B14; --card: #051929; --accent: #19A7CE; --text: #f0f0f0; --muted: #8892b0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; }
+  h1 { font-size: 28px; margin-bottom: 8px; }
+  .subtitle { color: var(--muted); margin-bottom: 32px; font-size: 14px; line-height: 1.6; }
+  .counter { color: var(--accent); font-weight: 600; }
+  .save-btn { background: var(--accent); color: var(--bg); border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 24px; }
+  .save-btn:hover { opacity: 0.85; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #1a2a3a; transition: border-color 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
+  .card:hover { border-color: var(--accent); }
+  .card.selected { border-color: #12D453; box-shadow: 0 0 0 3px #12D453; }
+  .card.selected::after { content: "\u2713"; position: absolute; top: 6px; right: 6px; background: #12D453; color: var(--bg); font-size: 16px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+  .card a { text-decoration: none; color: inherit; display: block; pointer-events: none; }
+  .card img { width: 100%; height: auto; display: block; }
+  .label { padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--accent); text-align: center; }
+  footer { margin-top: 60px; text-align: center; color: var(--muted); font-size: 12px; }
+</style>
 </head>
 <body>
-  <h1>Reveal — Mobbin Reference v2</h1>
-  <p class="subtitle">Best-in-class landing page sections from top SaaS brands (Linear, Notion, Figma, Stripe, Attio, etc.). Click any card to view full capture on Mobbin.</p>
-  <section class="category">
-    <h2>Hero Sections (Top SaaS: Linear, Notion, Figma, Stripe, Attio) — 15 references</h2>
-    <div class="grid">
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/077cb5e1-b0a3-4022-bdf4-2a856178a3d1" target="_blank">
-          <img src="mobbin-assets/0-attio.webp" alt="Attio section" loading="lazy" />
-          <div class="label">Attio</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/db0da4a6-735a-4fe8-8722-8fbd154d4496" target="_blank">
-          <img src="mobbin-assets/1-linear.webp" alt="Linear section" loading="lazy" />
-          <div class="label">Linear</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/117c2e77-d53e-4b51-a5b4-1e6dfe232ee9" target="_blank">
-          <img src="mobbin-assets/2-figma.webp" alt="Figma section" loading="lazy" />
-          <div class="label">Figma</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/8247f8fd-e608-43c7-a149-92d16e163277" target="_blank">
-          <img src="mobbin-assets/3-stripe.webp" alt="Stripe section" loading="lazy" />
-          <div class="label">Stripe</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/c350cfde-e8b3-4729-9d4a-c8a53119f970" target="_blank">
-          <img src="mobbin-assets/4-figma.webp" alt="Figma section" loading="lazy" />
-          <div class="label">Figma</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/4515ef1f-a99c-423e-a8df-69c20a8993d2" target="_blank">
-          <img src="mobbin-assets/5-notion.webp" alt="Notion section" loading="lazy" />
-          <div class="label">Notion</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/b8f0bfb5-9da2-45b1-978f-1251f7ec3a49" target="_blank">
-          <img src="mobbin-assets/6-linear.webp" alt="Linear section" loading="lazy" />
-          <div class="label">Linear</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/246816eb-30a9-4354-8424-e172ec80b8b8" target="_blank">
-          <img src="mobbin-assets/7-notion.webp" alt="Notion section" loading="lazy" />
-          <div class="label">Notion</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/f5853197-f4be-4096-8711-06685d8e3faf" target="_blank">
-          <img src="mobbin-assets/8-notion.webp" alt="Notion section" loading="lazy" />
-          <div class="label">Notion</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/04101a8f-d170-427c-8167-e402127bb177" target="_blank">
-          <img src="mobbin-assets/9-notion.webp" alt="Notion section" loading="lazy" />
-          <div class="label">Notion</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/410a4678-9ea0-482d-8f36-8fbebb80c453" target="_blank">
-          <img src="mobbin-assets/10-notion.webp" alt="Notion section" loading="lazy" />
-          <div class="label">Notion</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/0bcc14b6-bf70-42d7-b9d6-b1cf2909b383" target="_blank">
-          <img src="mobbin-assets/11-linear.webp" alt="Linear section" loading="lazy" />
-          <div class="label">Linear</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/40a46191-a57a-4bab-9a92-94fc14cad817" target="_blank">
-          <img src="mobbin-assets/12-linear.webp" alt="Linear section" loading="lazy" />
-          <div class="label">Linear</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/a7a518d9-2c98-4a98-a37a-d941bfedbe3b" target="_blank">
-          <img src="mobbin-assets/13-linear.webp" alt="Linear section" loading="lazy" />
-          <div class="label">Linear</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/60a559ff-803a-4207-b39f-1988f1420014" target="_blank">
-          <img src="mobbin-assets/14-notion.webp" alt="Notion section" loading="lazy" />
-          <div class="label">Notion</div>
-        </a>
-      </div>
-    </div>
-  </section>
-  <section class="category">
-    <h2>Pricing Sections (Award-Winning SaaS) — 10 references</h2>
-    <div class="grid">
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/71f2c686-b375-4859-9045-60d3abc755aa" target="_blank">
-          <img src="mobbin-assets/15-sproutsocial.webp" alt="Sprout Social section" loading="lazy" />
-          <div class="label">Sprout Social</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/e06e64c9-39b6-447c-a2e3-cdf4d6b11252" target="_blank">
-          <img src="mobbin-assets/16-apollo.webp" alt="Apollo section" loading="lazy" />
-          <div class="label">Apollo</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/ab1bb0e3-0492-4e3c-ba45-4691d7e1bf03" target="_blank">
-          <img src="mobbin-assets/17-intercom.webp" alt="Intercom section" loading="lazy" />
-          <div class="label">Intercom</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/2dfbd3f6-5b6e-49b2-bab5-c30d59dae0c5" target="_blank">
-          <img src="mobbin-assets/18-vanta.webp" alt="Vanta section" loading="lazy" />
-          <div class="label">Vanta</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/ded17d6d-bf71-4860-93f8-e8512d337b49" target="_blank">
-          <img src="mobbin-assets/19-openphone.webp" alt="OpenPhone section" loading="lazy" />
-          <div class="label">OpenPhone</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/8327bdfc-5c9d-4240-b4af-9431eebd0f9e" target="_blank">
-          <img src="mobbin-assets/20-clickup.webp" alt="ClickUp section" loading="lazy" />
-          <div class="label">ClickUp</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/e583f4d2-6cbb-477a-aad4-cb2ebad26761" target="_blank">
-          <img src="mobbin-assets/21-lemonsqueezy.webp" alt="Lemon Squeezy section" loading="lazy" />
-          <div class="label">Lemon Squeezy</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/8f04ae13-2a06-4368-8224-4c133eb6ba06" target="_blank">
-          <img src="mobbin-assets/22-origin.webp" alt="Origin section" loading="lazy" />
-          <div class="label">Origin</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/aed9359d-1070-4d39-8adb-6ae28e169a21" target="_blank">
-          <img src="mobbin-assets/23-craft.webp" alt="Craft section" loading="lazy" />
-          <div class="label">Craft</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/d480c900-a99d-498f-ae3d-fc5e2447c87f" target="_blank">
-          <img src="mobbin-assets/24-clockwise.webp" alt="Clockwise section" loading="lazy" />
-          <div class="label">Clockwise</div>
-        </a>
-      </div>
-    </div>
-  </section>
-  <section class="category">
-    <h2>Testimonial Sections (Top Brands) — 10 references</h2>
-    <div class="grid">
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/0c701f65-ae73-4165-9dbf-610613a2d986" target="_blank">
-          <img src="mobbin-assets/25-hex.webp" alt="Hex section" loading="lazy" />
-          <div class="label">Hex</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/a433390e-b486-4bf1-9c7a-aa13f60dec7b" target="_blank">
-          <img src="mobbin-assets/26-cursor.webp" alt="Cursor section" loading="lazy" />
-          <div class="label">Cursor</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/b1f82586-1975-4481-89ca-19decf5b4f8a" target="_blank">
-          <img src="mobbin-assets/27-hex.webp" alt="Hex section" loading="lazy" />
-          <div class="label">Hex</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/20eec636-0765-4356-bf94-f21fbc356cdf" target="_blank">
-          <img src="mobbin-assets/28-grain.webp" alt="Grain section" loading="lazy" />
-          <div class="label">Grain</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/7dff1f5f-e2cc-48f4-a3b4-04957bbc1fb0" target="_blank">
-          <img src="mobbin-assets/29-grain.webp" alt="Grain section" loading="lazy" />
-          <div class="label">Grain</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/e23f6ec0-8ff4-4bf0-a943-d707f6b826a7" target="_blank">
-          <img src="mobbin-assets/30-canva.webp" alt="Canva section" loading="lazy" />
-          <div class="label">Canva</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/2404f56e-76c2-4672-b481-15e4f0015090" target="_blank">
-          <img src="mobbin-assets/31-retool.webp" alt="Retool section" loading="lazy" />
-          <div class="label">Retool</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/b1389d88-2d18-4ae6-bd4b-b77440ddf29c" target="_blank">
-          <img src="mobbin-assets/32-elevenlabs.webp" alt="ElevenLabs section" loading="lazy" />
-          <div class="label">ElevenLabs</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/a039a1a3-52e7-430c-8291-7c16ed0f4078" target="_blank">
-          <img src="mobbin-assets/33-ramp.webp" alt="Ramp section" loading="lazy" />
-          <div class="label">Ramp</div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="https://mobbin.com/sites/sections/99285f4e-1d88-4dea-ac8d-e31feaee1d44" target="_blank">
-          <img src="mobbin-assets/34-monday.com.webp" alt="monday.com section" loading="lazy" />
-          <div class="label">monday.com</div>
-        </a>
-      </div>
-    </div>
-  </section>
-  <footer>Top-tier SaaS design references — for inspiration only</footer>
+<h1>Reveal — Mobbin Curated References</h1>
+<p class="subtitle">Sites you named: Linear, Lassie, ToDesktop, Poly, Runner, Robot.com, Norma, Monologue, Fixer (Fixa). <strong>Click a card to view on Mobbin. Click the card border again to select/deselect your favorites.</strong> <span id="counter" class="counter">0 selected</span></p>
+<button id="save-picks" class="save-btn">Save My Picks</button>
+<div class="grid">
+<div class="card" data-id="c5db0cc6-cd72-4388-b14e-2c7ae294bd0e"><a href="https://mobbin.com/sites/sections/c5db0cc6-cd72-4388-b14e-2c7ae294bd0e" target="_blank"><img src="mobbin-assets/0-linear.webp" alt="Linear section" loading="lazy" /><div class="label">Linear</div></a></div>
+<div class="card" data-id="ceb8e650-ab17-4718-bd60-be3afc93b1d1"><a href="https://mobbin.com/sites/sections/ceb8e650-ab17-4718-bd60-be3afc93b1d1" target="_blank"><img src="mobbin-assets/1-linear.webp" alt="Linear section" loading="lazy" /><div class="label">Linear</div></a></div>
+<div class="card" data-id="40a46191-a57a-4bab-9a92-94fc14cad817"><a href="https://mobbin.com/sites/sections/40a46191-a57a-4bab-9a92-94fc14cad817" target="_blank"><img src="mobbin-assets/2-linear.webp" alt="Linear section" loading="lazy" /><div class="label">Linear</div></a></div>
+<div class="card" data-id="8dddb841-9d25-4047-8f32-c793cee63a39"><a href="https://mobbin.com/sites/sections/8dddb841-9d25-4047-8f32-c793cee63a39" target="_blank"><img src="mobbin-assets/3-linear.webp" alt="Linear section" loading="lazy" /><div class="label">Linear</div></a></div>
+<div class="card" data-id="0e464c7e-94e9-43b1-a7a3-8f33bd04a16f"><a href="https://mobbin.com/sites/sections/0e464c7e-94e9-43b1-a7a3-8f33bd04a16f" target="_blank"><img src="mobbin-assets/4-linear.webp" alt="Linear section" loading="lazy" /><div class="label">Linear</div></a></div>
+<div class="card" data-id="b99fe27f-0826-490b-8dee-8fb256bfc740"><a href="https://mobbin.com/sites/sections/b99fe27f-0826-490b-8dee-8fb256bfc740" target="_blank"><img src="mobbin-assets/5-linear.webp" alt="Linear section" loading="lazy" /><div class="label">Linear</div></a></div>
+<div class="card" data-id="f8b93019-f62b-4e58-8f0d-e577baa204f3"><a href="https://mobbin.com/sites/sections/f8b93019-f62b-4e58-8f0d-e577baa204f3" target="_blank"><img src="mobbin-assets/6-linear.webp" alt="Linear section" loading="lazy" /><div class="label">Linear</div></a></div>
+<div class="card" data-id="db0da4a6-735a-4fe8-8722-8fbd154d4496"><a href="https://mobbin.com/sites/sections/db0da4a6-735a-4fe8-8722-8fbd154d4496" target="_blank"><img src="mobbin-assets/7-linear.webp" alt="Linear section" loading="lazy" /><div class="label">Linear</div></a></div>
+<div class="card" data-id="339ef9e8-57af-4599-999c-17e965a9a877"><a href="https://mobbin.com/sites/sections/339ef9e8-57af-4599-999c-17e965a9a877" target="_blank"><img src="mobbin-assets/8-linear.webp" alt="Linear section" loading="lazy" /><div class="label">Linear</div></a></div>
+<div class="card" data-id="0c5ba4e7-fd0e-458a-9922-4584dacbdec8"><a href="https://mobbin.com/sites/sections/0c5ba4e7-fd0e-458a-9922-4584dacbdec8" target="_blank"><img src="mobbin-assets/9-linear.webp" alt="Linear section" loading="lazy" /><div class="label">Linear</div></a></div>
+
+<div class="card" data-id="7d697cd9-6238-4426-ba2b-285b63c7fdd6"><a href="https://mobbin.com/sites/sections/7d697cd9-6238-4426-ba2b-285b63c7fdd6" target="_blank"><img src="mobbin-assets/10-lassie.webp" alt="Lassie section" loading="lazy" /><div class="label">Lassie</div></a></div>
+<div class="card" data-id="dcaae0e2-5def-449a-b47b-5eb5bd001b17"><a href="https://mobbin.com/sites/sections/dcaae0e2-5def-449a-b47b-5eb5bd001b17" target="_blank"><img src="mobbin-assets/11-lassie.webp" alt="Lassie section" loading="lazy" /><div class="label">Lassie</div></a></div>
+<div class="card" data-id="18728a1b-b0c9-4d37-b9f9-cde88ce58062"><a href="https://mobbin.com/sites/sections/18728a1b-b0c9-4d37-b9f9-cde88ce58062" target="_blank"><img src="mobbin-assets/12-lassie.webp" alt="Lassie section" loading="lazy" /><div class="label">Lassie</div></a></div>
+<div class="card" data-id="310955c5-6f5c-44eb-bb3c-ca0362b77008"><a href="https://mobbin.com/sites/sections/310955c5-6f5c-44eb-bb3c-ca0362b77008" target="_blank"><img src="mobbin-assets/13-lassie.webp" alt="Lassie section" loading="lazy" /><div class="label">Lassie</div></a></div>
+<div class="card" data-id="926d3a62-6a96-40d0-9c46-4965679df3c7"><a href="https://mobbin.com/sites/sections/926d3a62-6a96-40d0-9c46-4965679df3c7" target="_blank"><img src="mobbin-assets/14-lassie.webp" alt="Lassie section" loading="lazy" /><div class="label">Lassie</div></a></div>
+<div class="card" data-id="12951a6d-5b8b-441e-98fe-b0cb2a902198"><a href="https://mobbin.com/sites/sections/12951a6d-5b8b-441e-98fe-b0cb2a902198" target="_blank"><img src="mobbin-assets/15-lassie.webp" alt="Lassie section" loading="lazy" /><div class="label">Lassie</div></a></div>
+
+<div class="card" data-id="920d0adb-7d8b-4531-9659-faa024c815f8"><a href="https://mobbin.com/sites/sections/920d0adb-7d8b-4531-9659-faa024c815f8" target="_blank"><img src="mobbin-assets/16-fixa.webp" alt="Fixa section" loading="lazy" /><div class="label">Fixa</div></a></div>
+<div class="card" data-id="3b3c2b66-b096-4752-aa90-29d318ec9568"><a href="https://mobbin.com/sites/sections/3b3c2b66-b096-4752-aa90-29d318ec9568" target="_blank"><img src="mobbin-assets/17-fixa.webp" alt="Fixa section" loading="lazy" /><div class="label">Fixa</div></a></div>
+
+<div class="card" data-id="fd4cfacc-4566-4a17-8bf7-7e59bafca04b"><a href="https://mobbin.com/sites/sections/fd4cfacc-4566-4a17-8bf7-7e59bafca04b" target="_blank"><img src="mobbin-assets/18-todesktop.webp" alt="ToDesktop section" loading="lazy" /><div class="label">ToDesktop</div></a></div>
+<div class="card" data-id="21611e0a-3a8f-4014-a0d7-fed0488bd480"><a href="https://mobbin.com/sites/sections/21611e0a-3a8f-4014-a0d7-fed0488bd480" target="_blank"><img src="mobbin-assets/19-todesktop.webp" alt="ToDesktop section" loading="lazy" /><div class="label">ToDesktop</div></a></div>
+<div class="card" data-id="90fefda0-8306-46f4-875c-6a8a37fed96f"><a href="https://mobbin.com/sites/sections/90fefda0-8306-46f4-875c-6a8a37fed96f" target="_blank"><img src="mobbin-assets/20-todesktop.webp" alt="ToDesktop section" loading="lazy" /><div class="label">ToDesktop</div></a></div>
+<div class="card" data-id="e182cf94-4363-4964-ae63-16b5b7791961"><a href="https://mobbin.com/sites/sections/e182cf94-4363-4964-ae63-16b5b7791961" target="_blank"><img src="mobbin-assets/21-todesktop.webp" alt="ToDesktop section" loading="lazy" /><div class="label">ToDesktop</div></a></div>
+<div class="card" data-id="b7a57e38-c2a0-4261-8ba6-afa55b68029e"><a href="https://mobbin.com/sites/sections/b7a57e38-c2a0-4261-8ba6-afa55b68029e" target="_blank"><img src="mobbin-assets/22-todesktop.webp" alt="ToDesktop section" loading="lazy" /><div class="label">ToDesktop</div></a></div>
+<div class="card" data-id="89450139-fa9e-4052-a303-49998b2bd2c9"><a href="https://mobbin.com/sites/sections/89450139-fa9e-4052-a303-49998b2bd2c9" target="_blank"><img src="mobbin-assets/23-todesktop.webp" alt="ToDesktop section" loading="lazy" /><div class="label">ToDesktop</div></a></div>
+
+<div class="card" data-id="0d05a504-60e0-42f4-9382-bec0b893208a"><a href="https://mobbin.com/sites/sections/0d05a504-60e0-42f4-9382-bec0b893208a" target="_blank"><img src="mobbin-assets/24-poly.webp" alt="Poly section" loading="lazy" /><div class="label">Poly</div></a></div>
+<div class="card" data-id="80ecdb0b-349e-4a7c-a357-5674e18c8542"><a href="https://mobbin.com/sites/sections/80ecdb0b-349e-4a7c-a357-5674e18c8542" target="_blank"><img src="mobbin-assets/25-poly.webp" alt="Poly section" loading="lazy" /><div class="label">Poly</div></a></div>
+<div class="card" data-id="47770993-617f-473a-9734-2050fa0ea9fc"><a href="https://mobbin.com/sites/sections/47770993-617f-473a-9734-2050fa0ea9fc" target="_blank"><img src="mobbin-assets/26-poly.webp" alt="Poly section" loading="lazy" /><div class="label">Poly</div></a></div>
+<div class="card" data-id="3e6e779c-7452-4654-8204-74eff55a9bb7"><a href="https://mobbin.com/sites/sections/3e6e779c-7452-4654-8204-74eff55a9bb7" target="_blank"><img src="mobbin-assets/27-poly.webp" alt="Poly section" loading="lazy" /><div class="label">Poly</div></a></div>
+<div class="card" data-id="c107bf8e-31f4-450c-9f69-aabc31474fcb"><a href="https://mobbin.com/sites/sections/c107bf8e-31f4-450c-9f69-aabc31474fcb" target="_blank"><img src="mobbin-assets/28-poly.webp" alt="Poly section" loading="lazy" /><div class="label">Poly</div></a></div>
+<div class="card" data-id="388fc4ca-dc36-47eb-affa-83379311fcbc"><a href="https://mobbin.com/sites/sections/388fc4ca-dc36-47eb-affa-83379311fcbc" target="_blank"><img src="mobbin-assets/29-poly.webp" alt="Poly section" loading="lazy" /><div class="label">Poly</div></a></div>
+
+<div class="card" data-id="189776bc-f91f-481a-8abf-24a279f83f63"><a href="https://mobbin.com/sites/sections/189776bc-f91f-481a-8abf-24a279f83f63" target="_blank"><img src="mobbin-assets/30-runner.webp" alt="Runner section" loading="lazy" /><div class="label">Runner</div></a></div>
+<div class="card" data-id="d6ecc2ee-e00b-4a71-80de-d1fe47fff0a6"><a href="https://mobbin.com/sites/sections/d6ecc2ee-e00b-4a71-80de-d1fe47fff0a6" target="_blank"><img src="mobbin-assets/31-runner.webp" alt="Runner section" loading="lazy" /><div class="label">Runner</div></a></div>
+<div class="card" data-id="c631db52-a980-4583-ad09-1f0fd4731e0c"><a href="https://mobbin.com/sites/sections/c631db52-a980-4583-ad09-1f0fd4731e0c" target="_blank"><img src="mobbin-assets/32-runner.webp" alt="Runner section" loading="lazy" /><div class="label">Runner</div></a></div>
+<div class="card" data-id="bae5ed92-7ee6-4a31-88d6-160c29ad6cf6"><a href="https://mobbin.com/sites/sections/bae5ed92-7ee6-4a31-88d6-160c29ad6cf6" target="_blank"><img src="mobbin-assets/33-runner.webp" alt="Runner section" loading="lazy" /><div class="label">Runner</div></a></div>
+<div class="card" data-id="0ded7401-345c-4029-9ff4-620cbd2c5f7b"><a href="https://mobbin.com/sites/sections/0ded7401-345c-4029-9ff4-620cbd2c5f7b" target="_blank"><img src="mobbin-assets/34-runner.webp" alt="Runner section" loading="lazy" /><div class="label">Runner</div></a></div>
+<div class="card" data-id="1c808695-78df-4d7f-8073-0c4e57f1fed3"><a href="https://mobbin.com/sites/sections/1c808695-78df-4d7f-8073-0c4e57f1fed3" target="_blank"><img src="mobbin-assets/35-runner.webp" alt="Runner section" loading="lazy" /><div class="label">Runner</div></a></div>
+
+<div class="card" data-id="5bbc90c2-05e6-4626-a10c-3da9e38830ce"><a href="https://mobbin.com/sites/sections/5bbc90c2-05e6-4626-a10c-3da9e38830ce" target="_blank"><img src="mobbin-assets/36-robot.com.webp" alt="Robot.com section" loading="lazy" /><div class="label">Robot.com</div></a></div>
+<div class="card" data-id="591db5e7-4c33-4081-81dc-8e7cf4b28e53"><a href="https://mobbin.com/sites/sections/591db5e7-4c33-4081-81dc-8e7cf4b28e53" target="_blank"><img src="mobbin-assets/37-robot.com.webp" alt="Robot.com section" loading="lazy" /><div class="label">Robot.com</div></a></div>
+<div class="card" data-id="17dab1a2-5558-42bb-a1fb-010259caa5ae"><a href="https://mobbin.com/sites/sections/17dab1a2-5558-42bb-a1fb-010259caa5ae" target="_blank"><img src="mobbin-assets/38-robot.com.webp" alt="Robot.com section" loading="lazy" /><div class="label">Robot.com</div></a></div>
+<div class="card" data-id="e3577e3e-4b7f-4bf1-8058-627bcce0b790"><a href="https://mobbin.com/sites/sections/e3577e3e-4b7f-4bf1-8058-627bcce0b790" target="_blank"><img src="mobbin-assets/39-robot.com.webp" alt="Robot.com section" loading="lazy" /><div class="label">Robot.com</div></a></div>
+
+<div class="card" data-id="7161530e-b739-4971-94b7-72381ee13368"><a href="https://mobbin.com/sites/sections/7161530e-b739-4971-94b7-72381ee13368" target="_blank"><img src="mobbin-assets/40-monologue.webp" alt="Monologue section" loading="lazy" /><div class="label">Monologue</div></a></div>
+<div class="card" data-id="fbde692b-9ae3-46fa-baa1-ba2ead776aa6"><a href="https://mobbin.com/sites/sections/fbde692b-9ae3-46fa-baa1-ba2ead776aa6" target="_blank"><img src="mobbin-assets/41-monologue.webp" alt="Monologue section" loading="lazy" /><div class="label">Monologue</div></a></div>
+<div class="card" data-id="ca301838-13c1-4174-b29d-7ffb594935c4"><a href="https://mobbin.com/sites/sections/ca301838-13c1-4174-b29d-7ffb594935c4" target="_blank"><img src="mobbin-assets/42-monologue.webp" alt="Monologue section" loading="lazy" /><div class="label">Monologue</div></a></div>
+<div class="card" data-id="13687cde-f9cf-441f-832c-932cb2668d06"><a href="https://mobbin.com/sites/sections/13687cde-f9cf-441f-832c-932cb2668d06" target="_blank"><img src="mobbin-assets/43-monologue.webp" alt="Monologue section" loading="lazy" /><div class="label">Monologue</div></a></div>
+<div class="card" data-id="71630695-c9ff-43c8-a9a7-1feed054955d"><a href="https://mobbin.com/sites/sections/71630695-c9ff-43c8-a9a7-1feed054955d" target="_blank"><img src="mobbin-assets/44-monologue.webp" alt="Monologue section" loading="lazy" /><div class="label">Monologue</div></a></div>
+<div class="card" data-id="ce51e0dc-9e64-472b-8668-cb71ddb1f47f"><a href="https://mobbin.com/sites/sections/ce51e0dc-9e64-472b-8668-cb71ddb1f47f" target="_blank"><img src="mobbin-assets/45-monologue.webp" alt="Monologue section" loading="lazy" /><div class="label">Monologue</div></a></div>
+<div class="card" data-id="b8943ab7-c4ba-4d7b-9b4f-b300f7acc221"><a href="https://mobbin.com/sites/sections/b8943ab7-c4ba-4d7b-9b4f-b300f7acc221" target="_blank"><img src="mobbin-assets/46-monologue.webp" alt="Monologue section" loading="lazy" /><div class="label">Monologue</div></a></div>
+
+<div class="card" data-id="e2c98980-269f-432e-a8bc-55c981de2359"><a href="https://mobbin.com/sites/sections/e2c98980-269f-432e-a8bc-55c981de2359" target="_blank"><img src="mobbin-assets/47-norma.webp" alt="Norma section" loading="lazy" /><div class="label">Norma</div></a></div>
+<div class="card" data-id="1ee75ebd-f4c5-4fdb-99b8-8b3a7bc77175"><a href="https://mobbin.com/sites/sections/1ee75ebd-f4c5-4fdb-99b8-8b3a7bc77175" target="_blank"><img src="mobbin-assets/48-norma.webp" alt="Norma section" loading="lazy" /><div class="label">Norma</div></a></div>
+<div class="card" data-id="857a4823-e36c-4392-b388-5012f2c0a2b6"><a href="https://mobbin.com/sites/sections/857a4823-e36c-4392-b388-5012f2c0a2b6" target="_blank"><img src="mobbin-assets/49-norma.webp" alt="Norma section" loading="lazy" /><div class="label">Norma</div></a></div>
+<div class="card" data-id="526de761-73ae-46b3-8b55-ce9cfbb67cb4"><a href="https://mobbin.com/sites/sections/526de761-73ae-46b3-8b55-ce9cfbb67cb4" target="_blank"><img src="mobbin-assets/50-norma.webp" alt="Norma section" loading="lazy" /><div class="label">Norma</div></a></div>
+<div class="card" data-id="4f226657-7aca-4db4-9d7f-6f9039ee84ba"><a href="https://mobbin.com/sites/sections/4f226657-7aca-4db4-9d7f-6f9039ee84ba" target="_blank"><img src="mobbin-assets/51-norma.webp" alt="Norma section" loading="lazy" /><div class="label">Norma</div></a></div>
+<div class="card" data-id="df0ed1db-c499-4e08-be65-7bbc29214583"><a href="https://mobbin.com/sites/sections/df0ed1db-c499-4e08-be65-7bbc29214583" target="_blank"><img src="mobbin-assets/52-norma.webp" alt="Norma section" loading="lazy" /><div class="label">Norma</div></a></div>
+<div class="card" data-id="4e75b10e-428b-4709-b512-11d5380e0eda"><a href="https://mobbin.com/sites/sections/4e75b10e-428b-4709-b512-11d5380e0eda" target="_blank"><img src="mobbin-assets/53-norma.webp" alt="Norma section" loading="lazy" /><div class="label">Norma</div></a></div>
+<div class="card" data-id="cc6fe797-f3aa-4a78-a283-bde7fb1df9ae"><a href="https://mobbin.com/sites/sections/cc6fe797-f3aa-4a78-a283-bde7fb1df9ae" target="_blank"><img src="mobbin-assets/54-norma.webp" alt="Norma section" loading="lazy" /><div class="label">Norma</div></a></div>
+<div class="card" data-id="96f4183b-7eb5-437c-90ad-95d1306d320c"><a href="https://mobbin.com/sites/sections/96f4183b-7eb5-437c-90ad-95d1306d320c" target="_blank"><img src="mobbin-assets/55-norma.webp" alt="Norma section" loading="lazy" /><div class="label">Norma</div></a></div>
+</div>
+
+<footer>Curated from Mobbin — the sites you liked</footer>
+
+<script>
+  var selected = JSON.parse(localStorage.getItem('reveal-selected') || '[]');
+  var cards = document.querySelectorAll('.card');
+  var counter = document.getElementById('counter');
+  var saveBtn = document.getElementById('save-picks');
+
+  function renderCounter() {
+    counter.textContent = selected.length + ' selected';
+  }
+
+  function toggleCard(card) {
+    var id = card.getAttribute('data-id');
+    var idx = selected.indexOf(id);
+    if (idx > -1) {
+      selected.splice(idx, 1);
+      card.classList.remove('selected');
+    } else {
+      selected.push(id);
+      card.classList.add('selected');
+    }
+    localStorage.setItem('reveal-selected', JSON.stringify(selected));
+    renderCounter();
+  }
+
+  // Restore selected state from localStorage
+  selected.forEach(function(id) {
+    var card = document.querySelector('.card[data-id="' + id + '"]');
+    if (card) card.classList.add('selected');
+  });
+  renderCounter();
+
+  // Click handler: select/deselect on card click
+  cards.forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      // Don't trigger selection if clicking the link inside
+      if (e.target.tagName === 'A' || e.target.tagName === 'IMG') {
+        // Allow link navigation — only toggle if click wasn't on the link
+      } else {
+        toggleCard(card);
+      }
+    });
+  });
+
+  // Save button — copy JSON to clipboard
+  saveBtn.addEventListener('click', function() {
+    var json = JSON.stringify(selected);
+    navigator.clipboard.writeText(json).then(function() {
+      saveBtn.textContent = 'Copied! (' + selected.length + ' picks)';
+      setTimeout(function() { saveBtn.textContent = 'Save My Picks'; }, 2000);
+    });
+  });
+</script>
 </body>
 </html>

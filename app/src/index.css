@@ -184,3 +184,32 @@ button {
 .col-divider[data-active='true'] .col-divider-line {
   background-color: #19a7ce;
 }
+
+/* Sidebar open/close — Emil Kowalski motion bar.
+ * Labels fade + slide on the GPU (opacity/transform only) instead of popping
+ * in/out; the rail and content shell use a strong ease-in-out so the
+ * width/offset shift feels intentional, not a default ease. Buttons get a
+ * subtle press scale. */
+.nav-label {
+  transition: opacity 0.2s cubic-bezier(0.23, 1, 0.32, 1), transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.nav-item {
+  transition: transform 160ms ease-out, background-color 0.18s ease, color 0.18s ease;
+}
+.nav-item:active {
+  transform: scale(0.97);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-rail,
+  .content-shell {
+    transition-duration: 0.001ms !important;
+    transition-property: none !important;
+  }
+  .nav-label {
+    transition: opacity 0.2s ease !important;
+    transform: none !important;
+  }
+  .nav-item:active {
+    transform: none;
+  }
+}

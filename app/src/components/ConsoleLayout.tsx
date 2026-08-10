@@ -15,6 +15,7 @@ export default function ConsoleLayout({ children }: { children: ReactNode }) {
     <div style={{ backgroundColor: '#000B14', display: 'flex', height: '100dvh', maxHeight: '100dvh', overflow: 'hidden', overscrollBehavior: 'none', width: '100%' }}>
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
       <div
+        className="content-shell"
         style={{
           display: 'flex',
           flex: 1,
@@ -24,7 +25,7 @@ export default function ConsoleLayout({ children }: { children: ReactNode }) {
           marginLeft: `${sidebarWidth}px`,
           minWidth: 0,
           overflow: 'hidden',
-          transition: 'margin-left 0.18s ease',
+          transition: 'margin-left 0.22s cubic-bezier(0.77, 0, 0.175, 1)',
         }}
       >
         {children}
