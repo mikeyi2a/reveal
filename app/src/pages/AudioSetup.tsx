@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MicrophoneIcon, SlidersHorizontalIcon, MonitorIcon, CheckCircleIcon, ArrowRightIcon } from '@phosphor-icons/react';
 import ConsoleLayout, { Card, CardLabel } from '../components/ConsoleLayout';
-import PrimaryButton from '../components/PrimaryButton';
+import CTAButton from '../components/CTAButton';
 
 const METER_HEIGHTS = [14, 22, 30, 40, 48, 54, 46, 38, 50, 44, 36, 48, 54, 50, 40, 56, 44, 32, 24, 18, 12, 8, 6, 4];
 const METER_ACCENT_INDEX = 7;
@@ -175,10 +175,10 @@ export default function AudioSetup() {
         >
           Back
         </button>
-        <PrimaryButton onClick={() => navigate('/theme-studio')} style={{ height: '40px', paddingBlock: 0 }}>
+        <CTAButton onClick={() => navigate('/theme-studio')} style={{ height: '40px', paddingBlock: 0 }}>
           Continue
           <ArrowRightIcon size={16} weight="bold" />
-        </PrimaryButton>
+        </CTAButton>
       </footer>
     </ConsoleLayout>
   );

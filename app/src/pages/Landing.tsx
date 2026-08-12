@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MicrophoneIcon, PaletteIcon, BuildingsIcon, CloudCheckIcon, ArrowRightIcon, PencilSimpleIcon, CheckIcon } from '@phosphor-icons/react';
 import ConsoleLayout, { Card } from '../components/ConsoleLayout';
-import PrimaryButton from '../components/PrimaryButton';
+import CTAButton from '../components/CTAButton';
 import SecondaryButton from '../components/SecondaryButton';
 
 export default function Landing() {
@@ -59,10 +59,10 @@ export default function Landing() {
           </p>
 
           <div style={{ alignItems: 'center', display: 'flex', gap: '12px', marginTop: '6px' }}>
-            <PrimaryButton onClick={() => navigate('/audio-setup')}>
+            <CTAButton onClick={() => navigate('/audio-setup')}>
               Start Session
               <ArrowRightIcon size={16} weight="bold" />
-            </PrimaryButton>
+            </CTAButton>
             <SecondaryButton onClick={() => navigate('/projector')}>See it in action</SecondaryButton>
           </div>
         </section>

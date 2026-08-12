@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon, ArrowRightIcon } from '@phosphor-icons/react';
 import ConsoleLayout, { Card, CardLabel } from '../components/ConsoleLayout';
-import PrimaryButton from '../components/PrimaryButton';
+import CTAButton from '../components/CTAButton';
 
 const themes = [
   {
@@ -160,10 +160,10 @@ export default function ThemeStudio() {
         >
           Back
         </button>
-        <PrimaryButton onClick={() => navigate('/dashboard')}>
+        <CTAButton onClick={() => navigate('/dashboard')}>
           Start Session
           <ArrowRightIcon size={16} weight="bold" />
-        </PrimaryButton>
+        </CTAButton>
       </footer>
     </ConsoleLayout>
   );

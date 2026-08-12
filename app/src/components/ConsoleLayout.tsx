@@ -63,8 +63,8 @@ export function Card({ children, style }: { children: ReactNode; style?: React.C
   return (
     <div
       style={{
-        backgroundColor: '#051929',
-        borderRadius: '16px',
+        backgroundColor: '#141417',
+        borderRadius: '12px',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'visible',

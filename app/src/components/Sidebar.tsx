@@ -19,7 +19,7 @@ const navItems = [
   { label: 'Settings', icon: GearIcon, path: null },
 ];
 
-export const SIDEBAR_WIDTH_COLLAPSED = 68;
+export const SIDEBAR_WIDTH_COLLAPSED = 64;
 export const SIDEBAR_WIDTH_EXPANDED = 216;
 
 interface SidebarProps {
@@ -35,7 +35,9 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
     <aside
       className="sidebar-rail"
       style={{
-        backgroundColor: '#03111C',
+        backgroundColor: '#0C0C0E',
+        borderRight: '0.5px solid rgba(255, 255, 255, 0.06)',
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
         height: '100dvh',
@@ -98,7 +100,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
               background: 'none',
               border: 'none',
               borderRadius: '8px',
-              color: '#5B6B78',
+              color: '#9698A5',
               cursor: 'pointer',
               display: 'flex',
               height: '32px',
@@ -137,11 +139,15 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 className="nav-item"
                 style={{
                   alignItems: 'center',
-                  background: isActive ? '#19A7CE' : 'transparent',
+                  backgroundColor: isActive ? '#19A7CE3D' : 'transparent',
                   border: 'none',
                   borderRadius: '12px',
-                  boxShadow: isActive ? 'inset 0px 0px 6px 1px rgba(255, 255, 255, 0.25)' : 'none',
-                  color: isActive ? '#FFFFFF' : '#5B6B78',
+                  // Active gets a defining ring (same convention as .toggle-control's
+                  // active state and TranslationPill) so it reads at a glance, not
+                  // just a faint tint. Disabled stays at the original dim gray so it
+                  // still recedes — only enabled-but-inactive items get brighter.
+                  boxShadow: isActive ? 'inset 0 0 0 1px rgba(25, 167, 206, 0.4)' : 'none',
+                  color: isActive ? '#19A7CE' : isDisabled ? '#5B5B62' : '#9698A5',
                   cursor: isDisabled ? 'default' : 'pointer',
                   display: 'flex',
                   gap: '12px',
@@ -180,7 +186,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <span
           className="nav-label"
           style={{
-            color: '#5B6B78',
+            color: '#5B5B62',
             fontFamily: '"Geist", system-ui, sans-serif',
             fontSize: '11px',
             opacity: collapsed ? 0 : 1,

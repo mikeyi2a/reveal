@@ -54,7 +54,7 @@ export interface VerseDetection {
  * verse range doesn't exist (a mis-transcription for a complete Bible).
  */
 export function buildVerseDetection(ref: DetectedReference): VerseDetection | null {
-  if (!bible) throw new Error('buildVerseDetection called before ensureBibleLoaded() resolved');
+  if (!bible) return null;
   const chapterData = bible[ref.book]?.[String(ref.chapter)];
   if (!chapterData) return null;
 

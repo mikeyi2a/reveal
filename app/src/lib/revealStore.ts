@@ -39,7 +39,11 @@ export function readProjectorState(): ProjectorState | null {
  * in-memory React state — no backend required.
  */
 export function useProjectorState(): [ProjectorState | null, (s: ProjectorState | null) => void] {
-  const [state, setState] = useState<ProjectorState | null>(() => readProjectorState());
+  // Start blank on a fresh console load — don't restore a previously displayed
+  // verse from localStorage, or it looks like stale detection data on page load.
+  // The localStorage *sync* still works for live cross-tab updates; we just don't
+  // read it back as the initial state.
+  const [state, setState] = useState<ProjectorState | null>(null);
 
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {

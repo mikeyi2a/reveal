@@ -1,9 +1,55 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { pipeline, type AutomaticSpeechRecognitionPipeline } from '@huggingface/transformers';
 
 const MODEL_ID = 'Xenova/whisper-base';
 const SAMPLE_RATE = 16000;
-const SCRIPT_PROCESSOR_BUFFER_SIZE = 4096;
+
+/**
+ * Frames gathered per message from the worklet, counted at the AudioContext's
+ * own rate (48kHz here, so ~85ms). Same figure the ScriptProcessorNode used, so
+ * chunk granularity downstream is unchanged.
+ */
+const CAPTURE_FRAME_SIZE = 4096;
+
+/**
+ * Capture runs in an AudioWorklet — on the audio rendering thread, not the main
+ * thread. The ScriptProcessorNode this replaces fired `onaudioprocess` on the
+ * main thread, and its input buffer is only readable during that callback: when
+ * the main thread was busy (React rendering, or Whisper's decode loop, which is
+ * main-thread JS even on WebGPU) the callback ran late and that audio was
+ * destroyed outright. Speech went missing at exactly the moments the app was
+ * working hardest. A worklet cannot be starved by main-thread work.
+ *
+ * It also computes RMS here, which is what lets the mic meter share this one
+ * capture instead of opening a second getUserMedia + AudioContext for itself.
+ */
+const PCM_WORKLET_SRC = `
+class PcmCapture extends AudioWorkletProcessor {
+  constructor(options) {
+    super();
+    this._size = options.processorOptions.frameSize;
+    this._buf = new Float32Array(this._size);
+    this._n = 0;
+  }
+  process(inputs) {
+    const ch = inputs[0] && inputs[0][0];
+    if (!ch) return true;
+    for (let i = 0; i < ch.length; i++) {
+      this._buf[this._n++] = ch[i];
+      if (this._n === this._size) {
+        let sum = 0;
+        for (let j = 0; j < this._size; j++) sum += this._buf[j] * this._buf[j];
+        const pcm = this._buf.slice(0);
+        // Transfer rather than copy — this runs on the audio thread.
+        this.port.postMessage({ pcm: pcm, rms: Math.sqrt(sum / this._size) }, [pcm.buffer]);
+        this._n = 0;
+      }
+    }
+    return true;
+  }
+}
+registerProcessor('pcm-capture', PcmCapture);
+`;
 
 const SILENCE_RMS_THRESHOLD = 0.012;
 const SILENCE_HOLD_MS = 900;
@@ -32,6 +78,11 @@ export interface UseWhisperTranscriptionResult {
   backend: WhisperBackend | null;
   error: string | null;
   modelLoadMs: number | null;
+  /**
+   * Smoothed RMS (0–1) from the same capture Whisper listens to. Lives in a ref
+   * so the meter can be animated in rAF without re-rendering the console.
+   */
+  level: RefObject<number>;
 }
 
 function downsampleTo16kHz(input: Float32Array, inputSampleRate: number): Float32Array {
@@ -96,7 +147,8 @@ export function useWhisperTranscription(enabled: boolean = true): UseWhisperTran
   const transcriberRef = useRef<AutomaticSpeechRecognitionPipeline | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const processorRef = useRef<ScriptProcessorNode | null>(null);
+  const processorRef = useRef<AudioWorkletNode | null>(null);
+  const levelRef = useRef(0);
 
   const bufferRef = useRef<Float32Array>(new Float32Array(0));
   const speakingRef = useRef(false);
@@ -249,18 +301,34 @@ export function useWhisperTranscription(enabled: boolean = true): UseWhisperTran
         const audioContext = new AudioContext();
         audioContextRef.current = audioContext;
         console.info(`[useWhisperTranscription] AudioContext sample rate: ${audioContext.sampleRate}Hz, resampling to ${SAMPLE_RATE}Hz`);
+        const workletUrl = URL.createObjectURL(new Blob([PCM_WORKLET_SRC], { type: 'application/javascript' }));
+        try {
+          await audioContext.audioWorklet.addModule(workletUrl);
+        } finally {
+          URL.revokeObjectURL(workletUrl);
+        }
+        if (cancelled) return;
+
         const source = audioContext.createMediaStreamSource(stream);
-        const processor = audioContext.createScriptProcessor(SCRIPT_PROCESSOR_BUFFER_SIZE, 1, 1);
+        const processor = new AudioWorkletNode(audioContext, 'pcm-capture', {
+          numberOfInputs: 1,
+          numberOfOutputs: 1,
+          processorOptions: { frameSize: CAPTURE_FRAME_SIZE },
+        });
         processorRef.current = processor;
         const silentGain = audioContext.createGain();
         silentGain.gain.value = 0;
 
-        processor.onaudioprocess = (event) => {
-          const input = event.inputBuffer.getChannelData(0);
-          const downsampled = downsampleTo16kHz(input, audioContext.sampleRate);
-          handleChunk(downsampled);
+        processor.port.onmessage = (event: MessageEvent<{ pcm: Float32Array; rms: number }>) => {
+          const { pcm, rms } = event.data;
+          // Same smoothing the standalone meter used, so the footer level reads
+          // identically — it just no longer needs its own microphone.
+          levelRef.current = levelRef.current * 0.7 + rms * 0.3;
+          handleChunk(downsampleTo16kHz(pcm, audioContext.sampleRate));
         };
 
+        // The node emits silence, but staying connected to the destination is
+        // what guarantees the graph keeps being pulled.
         source.connect(processor);
         processor.connect(silentGain);
         silentGain.connect(audioContext.destination);
@@ -287,5 +355,5 @@ export function useWhisperTranscription(enabled: boolean = true): UseWhisperTran
     };
   }, [enabled]);
 
-  return { segments, status, backend, error, modelLoadMs };
+  return { segments, status, backend, error, modelLoadMs, level: levelRef };
 }

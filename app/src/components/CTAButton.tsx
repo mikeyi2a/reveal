@@ -2,7 +2,7 @@ import { useState, type ButtonHTMLAttributes, type CSSProperties } from 'react';
 import { BorderBeam } from 'border-beam';
 import { useDialKit } from 'dialkit';
 
-interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface CTAButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   style?: CSSProperties;
 }
 
@@ -25,10 +25,11 @@ function hexToHue(hex: string): number {
 }
 
 /**
- * Primary action button — solid cyan pill with hover-only BorderBeam.
+ * CTA button — solid cyan pill with hover-only BorderBeam.
+ * Used on onboarding/setup flow pages (Landing, AudioSetup, ThemeStudio).
  * DialKit exposes every base BorderBeamProps parameter + a color picker.
  */
-export default function PrimaryButton({ children, style, disabled, className, onMouseEnter, onMouseLeave, ...rest }: PrimaryButtonProps) {
+export default function CTAButton({ children, style, disabled, className, onMouseEnter, onMouseLeave, ...rest }: CTAButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const beam = useDialKit('Border Beam', {

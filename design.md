@@ -87,11 +87,12 @@ Any agent or developer working on Reveal MUST strictly follow these 8 design rul
 
 | Component | Background | Text Color | Font & Weight | Size / Line-Height | Padding | Border & Shadow |
 |---|---|---|---|---|---|---|
-| **`PrimaryButton`** | Electric Cyan (`#19A7CE`) | Soft Ivory (`#FCF7F0`) | `Figtree`, SemiBold 600 (`-0.03em`) | `15px` / `18px` | `14px 28px` (`paddingBlock: 14px`, `paddingInline: 28px`) | Radius `8px`, `box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25)` |
+| **`CTAButton`** (`CTAButton.tsx`) | Electric Cyan (`#19A7CE`) | Soft Ivory (`#FCF7F0`) | `Figtree`, SemiBold 600 (`-0.03em`) | `13px` / `20px` | `paddingBlock: 6px`, `paddingInline: 22px` | Radius `9999px`, `box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3)...`. Onboarding flow CTA button. |
+| **`ActionButton`** (`variant="primary"`) | State-driven `oklab` linear gradient (Paper spec) | Dark Cyan (`#04212C`) | `Figtree`, SemiBold 600 (`-0.03em`) | `12px` / `16px` | `paddingBlock: 10px`, `paddingInline: 20px` | Radius `9999px`. Dynamic Rest, Hover, Pressed, and Disabled states. Canonical primary action button on `OperatorDashboard.tsx` ("Confirm & display"). |
 | **`SecondaryButton`** | Subtle Dark Fill (`#0A273D`) | Refined Slate (`#8D9AA6`) | `Geist`, Medium 500 | `14px` / `18px` | `14px 22px` (`paddingBlock: 14px`, `paddingInline: 22px`) | Radius `8px`, `border: 1px solid rgba(255, 255, 255, 0.06)` |
 
-* **Animated Border Beam:** Primary buttons reveal a bottom traveling `<BorderBeam size="line" colorVariant="sunset">` on hover (`opacity: 0` -> `opacity: 1` transition).
-* **DialKit Live Controls Integration:** Configured with new defaults (`size: "line"`, `colorVariant: "sunset"`, `color.beamColor: "#0011ff"`, `duration: 2`, `tuning.strength: 1`, `tuning.brightness: 2.5`, `tuning.saturation: 3`, `tuning.hueRange: 45`, `tuning.borderRadius: 9999`). All parameters dynamically update the border beam on hover in real time.
+* **Animated Border Beam:** `CTAButton` reveals a traveling `<BorderBeam>` on hover (`opacity: 0` -> `opacity: 1` transition).
+* **DialKit Live Controls Integration:** Configured with defaults (`size: "line"`, `colorVariant: "sunset"`, `color.beamColor: "#0011ff"`, `duration: 1.5`, `tuning.strength: 1`, `tuning.brightness: 2.5`, `tuning.saturation: 3`, `tuning.hueRange: 45`, `tuning.borderRadius: 9999`). All parameters dynamically update the border beam on hover in real time.
 
 
 

@@ -1,0 +1,10 @@
+import { chromium } from 'playwright';
+const url = process.argv[2] || 'http://localhost:5173/dashboard';
+const out = process.argv[3] || '/tmp/clip.png';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1728, height: 1080 }, deviceScaleFactor: 3 });
+await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+await page.waitForTimeout(1500);
+await page.screenshot({ path: out, clip: { x: 0, y: 0, width: 90, height: 1080 } });
+await browser.close();
+console.log('clip saved', out);

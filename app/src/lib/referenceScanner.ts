@@ -80,13 +80,42 @@ function escapeRegExp(s: string): string {
 }
 
 const aliasToCanonical = new Map<string, string>();
+const extraAliases: string[] = [];
 for (const book of BOOKS) {
   for (const alias of book.aliases) {
     aliasToCanonical.set(alias.toLowerCase(), book.canonical);
   }
 }
+// Preacher shorthand (e.g. "Rom 7", "1 Cor 3", "Rev 21", "1 Corinth 3").
+// Registered both in the resolver and in allAliases so the scanner's regex
+// matches spoken abbreviations directly.
+const addAlias = (alias: string, canon: string) => {
+  aliasToCanonical.set(alias.toLowerCase(), canon);
+  extraAliases.push(alias);
+};
+const ABBREV: Record<string, string> = {
+  rom: 'Romans', gen: 'Genesis', exod: 'Exodus', rev: 'Revelation', phil: 'Philippians',
+};
+for (const [a, c] of Object.entries(ABBREV)) addAlias(a, c);
+for (const ns of [1, 2, 3] as const) {
+  const prefixes = ordinalPrefixes(ns);
+  const pairs: [string, string[]][] = [
+    ['Corinthians', ['cor', 'corinth']],
+    ['Thessalonians', ['thess']],
+    ['Timothy', ['tim']],
+    ['Peter', ['pet']],
+    ['Samuel', ['sam']],
+    ['Kings', ['kin']],
+    ['Chronicles', ['chron']],
+  ];
+  for (const [base, abbrs] of pairs) {
+    for (const abbr of abbrs) {
+      for (const pref of prefixes) addAlias(`${pref} ${abbr}`, `${ns} ${base}`);
+    }
+  }
+}
 
-const allAliases = BOOKS.flatMap((b) => b.aliases).sort((a, b) => b.length - a.length);
+const allAliases = [...BOOKS.flatMap((b) => b.aliases), ...extraAliases].sort((a, b) => b.length - a.length);
 const BOOK_GROUP = allAliases.map(escapeRegExp).join('|');
 
 // --- Spoken-number support -------------------------------------------------
@@ -266,6 +295,65 @@ export function referenceKey(ref: DetectedReference): string {
   return `${ref.book}|${ref.chapter}|${ref.verseStart ?? ''}|${ref.verseEnd ?? ''}`;
 }
 
+// --- Book-name fuzzy correction --------------------------------------------
+// Whisper frequently mis-hears rare, domain-specific book names — "Romans"
+// comes back as "romance" / "romens", or a phonetically similar word. Before
+// scanning, fuzzy-match each word against the 66 book names and correct
+// near-misses so detection sees the real book instead of a dead end.
+const CORRECTABLE_BOOK_WORDS = new Set<string>([
+  ...allAliases.filter((a) => !a.includes(' ')).map((a) => a.toLowerCase()),
+  // bases of numbered books, so a standalone misspelling can still resolve
+  'corinthians', 'timothy', 'peter', 'samuel', 'kings', 'chronicles', 'thessalonians',
+]);
+
+function levenshtein(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  const prev = new Array<number>(n + 1);
+  const cur = new Array<number>(n + 1);
+  for (let j = 0; j <= n; j++) prev[j] = j;
+  for (let i = 1; i <= m; i++) {
+    cur[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+    }
+    for (let j = 0; j <= n; j++) prev[j] = cur[j];
+  }
+  return prev[n];
+}
+
+/** Corrects misspelled / similar-sounding Bible book names in free text. */
+export function correctBookNames(text: string): string {
+  if (!text) return text;
+  return text
+    .split(/\b/)
+    .map((tok) => {
+      const core = tok.toLowerCase().replace(/[^a-z]/g, '');
+      if (core.length < 4) return tok;
+      if (CORRECTABLE_BOOK_WORDS.has(core)) return tok;
+      let best: string | null = null;
+      let bestD = Infinity;
+      for (const cand of CORRECTABLE_BOOK_WORDS) {
+        const d = levenshtein(core, cand);
+        if (d < bestD) {
+          bestD = d;
+          best = cand;
+        }
+      }
+      const allowed = core.length <= 5 ? 1 : 2;
+      if (best && bestD <= allowed) return best;
+      return tok;
+    })
+    .join('');
+}
+
+/** A bias string fed to the speech model so it favours Bible-book vocabulary. */
+export const BIBLE_BOOK_BIAS_PROMPT =
+  'This is a church sermon. Bible book names include: ' + BOOKS.map((b) => b.canonical).join(', ') + '.';
+
 /**
  * Scans free text for Bible references. Handles the way references are
  * actually spoken from a pulpit — word numbers ("seven fifteen"), a missing
@@ -274,7 +362,8 @@ export function referenceKey(ref: DetectedReference): string {
  * where a dash genuinely is a range.
  */
 export function scanText(text: string): DetectedReference[] {
-  const normalized = wordsToDigits((text || '').toLowerCase());
+  const corrected = correctBookNames(text || '');
+  const normalized = wordsToDigits(corrected.toLowerCase());
   const raws = [
     ...collect(SPOKEN_RANGE_RE, normalized, parseRange),
     ...collect(SPOKEN_CV_RE, normalized, parseSpokenCv),

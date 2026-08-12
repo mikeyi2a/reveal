@@ -56,7 +56,7 @@ export default function ServiceQueue({
             bottom: '3px',
             left: '3px',
             width: 'calc(50% - 3px)',
-            backgroundColor: '#0A273D',
+            backgroundColor: '#141416',
             border: '1px solid rgba(25,167,206,0.3)',
             borderRadius: '6px',
             transform: `translateX(${activeTab === 'recent' ? '100%' : '0%'})`,
@@ -153,7 +153,7 @@ export default function ServiceQueue({
             <div
               style={{
                 alignItems: 'center',
-                backgroundColor: '#0A273D',
+                backgroundColor: '#141416',
                 borderRadius: '12px',
                 color: '#8D9AA6',
                 display: 'flex',
@@ -192,7 +192,7 @@ export default function ServiceQueue({
                 }}
                 style={{
                   alignItems: 'center',
-                  backgroundColor: dragOverId === item.id ? 'rgba(25,167,206,0.08)' : '#08202F',
+                  backgroundColor: dragOverId === item.id ? 'rgba(25,167,206,0.08)' : '#1C1C20',
                   border: `1px solid ${dragOverId === item.id ? 'rgba(25,167,206,0.4)' : 'rgba(255,255,255,0.05)'}`,
                   borderRadius: '12px',
                   cursor: 'grab',
@@ -217,7 +217,7 @@ export default function ServiceQueue({
                       {refLabel(item.ref)}
                     </span>
                     {item.label && (
-                      <span style={{ backgroundColor: '#051929', borderRadius: '6px', color: '#19A7CE', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '10px', fontWeight: 500, letterSpacing: '0.04em', paddingBlock: '2px', paddingInline: '6px', textTransform: 'uppercase' }}>
+                      <span style={{ backgroundColor: '#0D0D0F', borderRadius: '6px', color: '#19A7CE', fontFamily: '"Geist", system-ui, sans-serif', fontSize: '10px', fontWeight: 500, letterSpacing: '0.04em', paddingBlock: '2px', paddingInline: '6px', textTransform: 'uppercase' }}>
                         {item.label}
                       </span>
                     )}
@@ -243,7 +243,7 @@ export default function ServiceQueue({
             <div
               style={{
                 alignItems: 'center',
-                backgroundColor: '#0A273D',
+                backgroundColor: '#141416',
                 borderRadius: '12px',
                 color: '#5B6B78',
                 display: 'flex',
@@ -263,7 +263,7 @@ export default function ServiceQueue({
                 key={v.id}
                 style={{
                   alignItems: 'center',
-                  backgroundColor: '#08202F',
+                  backgroundColor: '#1C1C20',
                   border: '1px solid rgba(255,255,255,0.05)',
                   borderRadius: '12px',
                   display: 'flex',

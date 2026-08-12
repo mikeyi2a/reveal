@@ -18,7 +18,6 @@ import {
 import { ensureBibleLoaded, buildVerseDetection, type VerseDetection, type VerseBatch } from '../lib/verseLookup';
 import { useProjectorState, type ProjectorState } from '../lib/revealStore';
 import { useWhisperTranscription, type WhisperStatus, type WhisperBackend, type TranscriptSegment } from '../hooks/useWhisperTranscription';
-import useAudioLevel from '../hooks/useAudioLevel';
 
 /** One queue entry per displayable batch. A wide reading (e.g. Romans 8:1-24)
  *  becomes several entries: the primary batch gets emphasis styling, the rest
@@ -67,9 +66,17 @@ export interface RevealSessionValue {
   detectionQueue: VerseDetectionQueueItem[];
   recentDetections: VerseDetectionQueueItem[];
   unresolvedRef: string | null;
+  belowThresholdRef: { label: string; pct: number } | null;
 
   autoPush: boolean;
   setAutoPush: (v: boolean) => void;
+
+  confidenceThreshold: number;
+  setConfidenceThreshold: (v: number) => void;
+  autoPushDelay: number;
+  setAutoPushDelay: (v: number) => void;
+  sensitivity: 'Conservative' | 'Balanced' | 'Aggressive';
+  setSensitivity: (v: 'Conservative' | 'Balanced' | 'Aggressive') => void;
 
   live: LiveState;
   setLive: React.Dispatch<React.SetStateAction<LiveState>>;
@@ -107,8 +114,17 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
   const [detectionQueue, setDetectionQueue] = useState<VerseDetectionQueueItem[]>([]);
   const [recentDetections, setRecentDetections] = useState<VerseDetectionQueueItem[]>([]);
   const [unresolvedRef, setUnresolvedRef] = useState<string | null>(null);
+  const [belowThresholdRef, setBelowThresholdRef] = useState<{ label: string; pct: number } | null>(null);
   const [bibleReady, setBibleReady] = useState(false);
   const [autoPush, setAutoPush] = useState(false);
+  // Auto-detected refs land at 95% (chapter+verse) or 75% (chapter only, no
+  // verse — e.g. "turn to Romans 7"). 70 is the highest step that still
+  // clears 75%, so a bare chapter reference is surfaced by default instead
+  // of silently sitting in a dead zone between the two tiers.
+  const [confidenceThreshold, setConfidenceThreshold] = useState(70);
+  const [autoPushDelay, setAutoPushDelay] = useState(1.2);
+  const [sensitivity, setSensitivity] = useState<'Conservative' | 'Balanced' | 'Aggressive'>('Balanced');
+  const autoPushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [live, setLive] = useState<LiveState>({ mic: true, video: false, system: false });
   const [sessionSeconds, setSessionSeconds] = useState(0);
   const [manualQuery, setManualQuery] = useState('');
@@ -119,9 +135,16 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
   // Resources only run while a session is active, so navigating away (or to
   // the Landing / Projector) keeps the same session alive instead of tearing
   // down the mic, the model, and the elapsed timer.
-  const { level: micLevel } = useAudioLevel(live.mic && active);
-  const { segments, status: whisperStatus, backend: whisperBackend, error: whisperError, modelLoadMs } =
-    useWhisperTranscription(active && live.mic);
+  // One microphone, one AudioContext. The level meter is derived from the same
+  // capture Whisper listens to rather than opening a second getUserMedia.
+  const {
+    segments,
+    status: whisperStatus,
+    backend: whisperBackend,
+    error: whisperError,
+    modelLoadMs,
+    level: micLevel,
+  } = useWhisperTranscription(active && live.mic);
 
   const stabilizerRef = useRef(new ReferenceStabilizer());
   const scannedFinalIdsRef = useRef(new Set<string>());
@@ -151,7 +174,8 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     ensureBibleLoaded()
       .then(() => {
-        if (!cancelled) setBibleReady(true);
+        if (cancelled) return;
+        setBibleReady(true);
       })
       .catch((err) => console.error('[verseLookup] failed to load bundled Bible', err));
     return () => {
@@ -194,21 +218,34 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     };
 
     const queueDetectedRef = (ref: ReturnType<typeof scanText>[number]) => {
+      // Filter out low confidence scans when confidence threshold is set high
+      const refConfidencePct = ref.confidence === 'high' ? 95 : ref.confidence === 'medium' ? 75 : 100;
+      if (refConfidencePct < confidenceThreshold) {
+        console.info(`[referenceScanner] skipped ref ${ref.raw}: confidence ${refConfidencePct}% below threshold ${confidenceThreshold}%`);
+        setBelowThresholdRef({ label: formatReference(ref), pct: refConfidencePct });
+        return;
+      }
+
       const detection = buildVerseDetection(ref);
       if (!detection) {
         // The bundled Bible is complete, so an unresolvable reference means a
         // mis-transcription ("John 99:1"). Surface it instead of dropping it.
         console.info('[referenceScanner] no such passage:', formatReference(ref));
         setUnresolvedRef(formatReference(ref));
+        setBelowThresholdRef(null);
         return;
       }
       setUnresolvedRef(null);
+      setBelowThresholdRef(null);
 
       if (autoPush) {
-        // Auto-push the primary batch; leave the remaining parts as their own
-        // cards so the operator can click them on if the preacher reads on.
-        projectBatch(detection, detection.batches[0]);
-        enqueue(toQueueItems(detection, ref.confidence).slice(1));
+        // Auto-push primary batch after configured autoPushDelay
+        const items = toQueueItems(detection, ref.confidence);
+        enqueue(items);
+        if (autoPushTimerRef.current) clearTimeout(autoPushTimerRef.current);
+        autoPushTimerRef.current = setTimeout(() => {
+          projectBatch(detection, detection.batches[0]);
+        }, Math.max(100, autoPushDelay * 1000));
         return;
       }
 
@@ -316,6 +353,7 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
   // without waiting for the preacher to speak it. Tagged 100% — a deliberate
   // operator action, never a guess.
   const runManualSearch = () => {
+    if (!bibleReady) return;
     const q = manualQuery.trim();
     if (!q) return;
     const refs = scanText(q);
@@ -350,6 +388,7 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     setDetectionQueue([]);
     setRecentDetections([]);
     setUnresolvedRef(null);
+    setBelowThresholdRef(null);
     setSessionSeconds(0);
     setAutoPush(false);
     setLive({ mic: true, video: false, system: false });
@@ -376,8 +415,15 @@ export function RevealSessionProvider({ children }: { children: ReactNode }) {
     detectionQueue,
     recentDetections,
     unresolvedRef,
+    belowThresholdRef,
     autoPush,
     setAutoPush,
+    confidenceThreshold,
+    setConfidenceThreshold,
+    autoPushDelay,
+    setAutoPushDelay,
+    sensitivity,
+    setSensitivity,
     live,
     setLive,
     projector,
