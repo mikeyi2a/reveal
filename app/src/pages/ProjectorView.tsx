@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { XIcon, PowerIcon } from '@phosphor-icons/react';
+import { isTauri } from '@tauri-apps/api/core';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import Stage from '../components/Stage';
 import ProjectorArtboard from '../components/ProjectorArtboard';
 import { useProjectorState } from '../lib/revealStore';
@@ -120,7 +122,18 @@ export default function ProjectorView() {
         <ProjectorControlButton label="Blackout" onClick={() => setBlackout((b) => !b)} active={blackout}>
           <PowerIcon size={18} weight={blackout ? 'fill' : 'regular'} />
         </ProjectorControlButton>
-        <ProjectorControlButton label="Exit" onClick={() => navigate('/dashboard')}>
+        <ProjectorControlButton
+          label="Exit"
+          onClick={() => {
+            // Native: this route only ever lives in its own dedicated window
+            // (see openProjectorWindow's create-or-focus logic in revealStore),
+            // so "Exit" closes that window rather than navigating inside it.
+            // Web: unchanged — /projector can still legitimately be an
+            // in-place view there, so it navigates back as it always has.
+            if (isTauri()) void getCurrentWebviewWindow().close();
+            else navigate('/dashboard');
+          }}
+        >
           <XIcon size={18} weight="bold" />
         </ProjectorControlButton>
       </div>

@@ -7,6 +7,7 @@ import type { IconProps } from '@phosphor-icons/react';
 import { DEFAULT_PROJECTOR } from '../components/ProjectorArtboard';
 import { useRevealSession, type QueuedVerse, type VerseDetectionQueueItem } from '../session/RevealSessionProvider';
 import Sidebar, { SIDEBAR_WIDTH_COLLAPSED, SIDEBAR_WIDTH_EXPANDED } from '../components/Sidebar';
+import { isTauri } from '@tauri-apps/api/core';
 import { openProjectorWindow } from '../lib/revealStore';
 import type { Confidence, DetectedReference } from '../lib/referenceScanner';
 import {
@@ -1072,7 +1073,14 @@ export default function OperatorDashboard() {
                   copy stays clean so it is still readable at a glance. */}
               <button
                 type="button"
-                onClick={() => navigate('/projector')}
+                onClick={() => {
+                  // Native: /projector must only ever be its own dedicated
+                  // window (see openProjectorWindow's create-or-focus logic),
+                  // never an in-place takeover of the main console window.
+                  // Web: unchanged in-place navigation, unaffected by this.
+                  if (isTauri()) void openProjectorWindow();
+                  else navigate('/projector');
+                }}
                 style={{ ...SCREEN_HOUSING, border: 'none', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', padding: '4px 4px 0', width: '100%' }}
               >
                 <div
